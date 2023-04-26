@@ -16,9 +16,11 @@ GRANT TEMPORARY, CONNECT ON DATABASE thesisdb TO PUBLIC;
 
 GRANT ALL ON DATABASE thesisdb TO postgres;
 
+\c thesisdb
+
 -- Table: public.users
 
--- DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.users;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
