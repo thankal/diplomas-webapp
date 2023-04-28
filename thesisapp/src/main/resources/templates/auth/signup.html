@@ -8,9 +8,10 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
 
-	<title>Register</title>
+    <script th:src="@{/js/signup.js}"></script>
+
+    <title>Register</title>
 </head>
 
 
@@ -26,7 +27,7 @@
       <h4 class="card-title mt-2">Sign up</h4>
     </header>
     <article class="card-body">
-    <form action="#" th:action="@{/save}" th:object="${user}" method="post">
+    <form id="signup-form" action="#" th:action="@{/save}" th:object="${user}" method="post">
       <div class="form-row">
         <div class="col form-group">
         <label>Username</label>
@@ -34,9 +35,11 @@
         </div>
       </div>
       
-      <div class="form-group">
-        <label>Password</label>
-          <input  th:field="*{password}" class="form-control" type="password" required>
+      <div class="form-row">
+        <div class="col form-group">
+          <label>Password</label>
+            <input  th:field="*{password}" class="form-control" type="password" required>
+        </div> 
       </div> 
 
       <div class="form-row">
@@ -49,40 +52,55 @@
             <input type="text" class="form-control" placeholder=" " required>
         </div> 
       </div> 
-      <div class="form-group">
-        <label>Email address</label>
-        <input type="email" th:field="*{email}" class="form-control" placeholder="" required>
-        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div> 
-
-      <div class="form-group">
-        <label>Role</label>
-        <select th:field="*{role}" class="custom-select" required>
-          <option value="STUDENT">Student</option>
-          <option value="PROFESSOR">Professor</option>
-        </select>
+      <div class="form-row">
+        <div class="col form-group">
+          <label>Email address</label>
+          <input type="email" th:field="*{email}" class="form-control" placeholder="" required>
+          <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div> 
       </div> 
 
       <div class="form-row">
-        <div class="form-group col-md-4">
-          <label>Year of Studies</label>
-          <input type="number" class="form-control" required>
-        </div>
-
-        <div class="form-group col-md-4">
-          <label>Courses Remaining</label>
-          <input type="number" class="form-control" required>
-        </div>
-
-        <div class="form-group col-md-4">
-          <label>Average Grade</label>
-          <input type="number" class="form-control" required>
-        </div>
-
+        <div class="col form-group">
+          <label>Role</label>
+          <select th:field="*{role}" class="custom-select" required>
+            <option value="disabled" disabled >Choose a Role</option>
+            <option value="STUDENT">Student</option>
+            <option value="PROFESSOR">Professor</option>
+          </select>
+        </div> 
       </div> 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block"> Sign up </button>
+
+      <div class="student-fields">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label>Year of studies</label>
+            <input type="number" class="form-control" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Courses Remaining</label>
+            <input type="number" class="form-control" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label>Average Grade</label>
+            <input type="number" class="form-control" required>
+          </div>
+        </div> 
+      </div>
+
+      <div class="professor-fields">
+        <div class="form-row">
+          <div class="col-md-12 form-group">
+          <label>Speciality</label>
+          <input type="text" class="form-control" placeholder=" " required>
+          </div>
+          <div class="col"></div>
         </div>
+      </div>
+
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-block"> Sign up </button>
+      </div>
     </form>
     </article>
 
