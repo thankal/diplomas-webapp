@@ -16,21 +16,48 @@
 
 <body>
 
+
 <div class="container">
 
-    <form th:action="@{/login}" method="POST" >
-        <h3 th:text="Login"></h3>
-        <input type="text" name="username" th:placeholder="Username" /> <br /><br />
-        <input type="password" th:placeholder="Password" name="password" /> <br /><br />
-        <button type="Submit" class="btn btn-info col-2"> Login </button>
-        <a th:href="@{register}" class="btn btn-primary col-2"> Register </a><br />
-        
-        <div th:if="${param.error}"><p>Username or Password is invalid.</p></div> <br/>
-   
-   		<span th:utext="${successMessage}"></span>
-    </form>
+    <div class="row justify-content-center">
+    <div class="col-md-6">
+    <div class="card">
+        <header class="card-header">
+            <a th:href="@{/register}" class="float-right btn btn-outline-primary mt-1">Register</a>
+            <h4 class="card-title mt-2">Sign in</h4>
+        </header>
+        <article class="card-body">
+        <form th:action="@{/login}" method="POST" >
+            <div class="form-row">
+            <div class="col form-group">
+            <label>Username</label>
+            <input type="text" th:placeholder="Username" name="username" class="form-control" required>
+            </div>
+            </div>
+            
+            <div class="form-group">
+            <label>Password</label>
+                <input th:placeholder="password" name="password" class="form-control" type="password" required>
+            </div> 
 
-</div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+            </div>
+        </form>
+        </article>
+
+        <div th:if="${param.error}"><p>Username or Password is invalid.</p></div> <br/>
+   		<span th:utext="${successMessage}"></span>
+
+        <div class="border-top card-body text-center">Need an account? <a th:href="@{/register}">Register</a></div>
+    </div> 
+    </div> 
+
+    </div> 
+
+
+</div> 
+
 
 </body>
 </html>

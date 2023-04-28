@@ -40,9 +40,12 @@ public class CustomSecuritySuccessHandler extends SimpleUrlAuthenticationSuccess
 	        
 	        if(roles.contains("ADMIN")){
 	            url = "/admin/dashboard";
-	        }else if(roles.contains("USER")) {
-	            url = "/user/dashboard"; // ZAS added /user/ here
+	        }else if(roles.contains("STUDENT")) {
+	            url = "/student/dashboard"; // ZAS added /user/ here
 	        }
+			else if (roles.contains("PROFESSOR")) {
+				url = "/professor/dashboard";
+			}
 	        
 	        return url;
 	    }

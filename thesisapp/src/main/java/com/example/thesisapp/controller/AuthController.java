@@ -22,6 +22,7 @@ public class AuthController {
     @RequestMapping("/register")
     public String register(Model model){
         model.addAttribute("user", new User());
+        model.addAttribute("", new User());
         return "auth/signup";
     }
 

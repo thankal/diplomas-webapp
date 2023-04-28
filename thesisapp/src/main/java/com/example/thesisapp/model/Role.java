@@ -1,7 +1,8 @@
 package com.example.thesisapp.model;
 
 public enum Role {
-	USER("User"),
+	STUDENT("Student"),
+    PROFESSOR("Professor"),
     ADMIN("Admin");
 
     private final String value;

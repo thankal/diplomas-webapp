@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class AdminController {
 
-    @RequestMapping("/admin/dashboard")
+    @RequestMapping("/professor/dashboard")
     public String getAdminHome(){
-        return "admin/dashboard";
+        return "professor/dashboard";
     }
 }
