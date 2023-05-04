@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.thesisapp.model.User;
 
-public interface UserDAO extends JpaRepository<User, Integer> {
+public interface UserDAO extends JpaRepository<User, Long> {
 	
 	Optional<User> findByUsername(String username);
 

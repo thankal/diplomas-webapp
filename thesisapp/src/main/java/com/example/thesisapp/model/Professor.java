@@ -16,20 +16,20 @@ public class Professor{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="student_id")
+	@Column(name="prof_id")
 	private Long id;
 	
 	@Column(name="first_name")
-	private String first_name;
+	private String firstName;
 
 	@Column(name="last_name")
-	private String last_name;
+	private String lastName;
 
 	@Column(name="speciality")
 	private String speciality;
 	
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	@JoinColumn(name = "user_fk", referencedColumnName = "user_id")
 	private User user;
 
 	public Long getId() {
@@ -40,20 +40,20 @@ public class Professor{
 		this.id = id;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getSpeciality() {
@@ -71,6 +71,7 @@ public class Professor{
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 
 	
 	

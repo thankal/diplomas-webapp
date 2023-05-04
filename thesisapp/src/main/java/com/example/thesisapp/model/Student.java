@@ -20,22 +20,22 @@ public class Student{
 	private Long id;
 	
 	@Column(name="first_name")
-	private String first_name;
+	private String firstName;
 
 	@Column(name="last_name")
-	private String last_name;
+	private String lastName;
 
 	@Column(name="year_of_studies")
-	private int year_of_studies;
+	private int yearOfStudies;
 
 	@Column(name="average_grade")
-	private double average_grade;
+	private double averageGrade;
 	
 	@Column(name="remaining_courses")
-	private int remaining_courses;
+	private int remainingCourses;
 	
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	@JoinColumn(name = "user_fk", referencedColumnName = "user_id")
 	private User user;
 
 	public Long getId() {
@@ -46,44 +46,44 @@ public class Student{
 		this.id = id;
 	}
 
-	public String getFirst_name() {
-		return first_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.first_name = first_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setLast_name(String last_name) {
-		this.last_name = last_name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
-	public int getYear_of_studies() {
-		return year_of_studies;
+	public int getYearOfStudies() {
+		return yearOfStudies;
 	}
 
-	public void setYear_of_studies(int year_of_studies) {
-		this.year_of_studies = year_of_studies;
+	public void setYearOfStudies(int yearOfStudies) {
+		this.yearOfStudies = yearOfStudies;
 	}
 
-	public double getAverage_grade() {
-		return average_grade;
+	public double getAverageGrade() {
+		return averageGrade;
 	}
 
-	public void setAverage_grade(double average_grade) {
-		this.average_grade = average_grade;
+	public void setAverageGrade(double averageGrade) {
+		this.averageGrade = averageGrade;
 	}
 
-	public int getRemaining_courses() {
-		return remaining_courses;
+	public int getRemainingCourses() {
+		return remainingCourses;
 	}
 
-	public void setRemaining_courses(int remaining_courses) {
-		this.remaining_courses = remaining_courses;
+	public void setRemainingCourses(int remainingCourses) {
+		this.remainingCourses = remainingCourses;
 	}
 
 	public User getUser() {
@@ -93,6 +93,7 @@ public class Student{
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	
 	
 }

@@ -27,7 +27,7 @@
       <h4 class="card-title mt-2">Sign up</h4>
     </header>
     <article class="card-body">
-    <form id="signup-form" action="#" th:action="@{/save}" th:object="${user}" method="post">
+    <form id="signup-form" action="#" th:action="@{/save}" th:object="${userForm}" method="post">
       <div class="form-row">
         <div class="col form-group">
         <label>Username</label>
@@ -45,11 +45,11 @@
       <div class="form-row">
         <div class="col form-group">
           <label>First name </label>   
-          <input type="text" class="form-control" placeholder="" required>
+          <input type="text" th:field="*{firstName}" class="form-control" placeholder="" required>
         </div> 
         <div class="col form-group">
           <label>Last name</label>
-            <input type="text" class="form-control" placeholder=" " required>
+            <input type="text" th:field="*{lastName}" class="form-control" placeholder=" " required>
         </div> 
       </div> 
       <div class="form-row">
@@ -75,15 +75,15 @@
         <div class="form-row">
           <div class="form-group col-md-4">
             <label>Year of studies</label>
-            <input type="number" class="form-control" required>
+            <input type="number" th:field="*{yearOfStudies}" class="form-control" required>
           </div>
           <div class="form-group col-md-4">
             <label>Courses Remaining</label>
-            <input type="number" class="form-control" required>
+            <input type="number" th:field="*{coursesRemaining}" class="form-control" required>
           </div>
           <div class="form-group col-md-4">
             <label>Average Grade</label>
-            <input type="number" class="form-control" required>
+            <input type="number" th:field="*{avgGrade}" class="form-control" required>
           </div>
         </div> 
       </div>
@@ -92,7 +92,7 @@
         <div class="form-row">
           <div class="col-md-12 form-group">
           <label>Speciality</label>
-          <input type="text" class="form-control" placeholder=" " required>
+          <input type="text" th:field="*{speciality}" class="form-control" placeholder=" " required>
           </div>
           <div class="col"></div>
         </div>
