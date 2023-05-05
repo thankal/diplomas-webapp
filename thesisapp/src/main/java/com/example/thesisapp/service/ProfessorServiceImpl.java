@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.thesisapp.dao.ProfessorDAO;
 import com.example.thesisapp.model.Professor;
+import com.example.thesisapp.model.User;
 
 @Service
 public class ProfessorServiceImpl implements ProfessorService {
@@ -18,5 +19,12 @@ public class ProfessorServiceImpl implements ProfessorService {
 	public void saveProfessor(Professor professor) {
         professorDAO.save(professor);	
     }
+
+	@Override
+	public Professor findProfessorByUser(User user) {
+		return professorDAO.findByUser(user).orElseThrow(
+				()-> new RuntimeException("PROFESSOR_NOT_FOUND")
+			);
+	}
 
 }

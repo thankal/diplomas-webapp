@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.thesisapp.model.User;
@@ -13,7 +12,6 @@ import com.example.thesisapp.model.Professor;
 import com.example.thesisapp.service.UserService;
 import com.example.thesisapp.service.StudentService;
 import com.example.thesisapp.service.ProfessorService;
-import com.example.thesisapp.controller.UserForm;
 
 @Controller
 public class AuthController {

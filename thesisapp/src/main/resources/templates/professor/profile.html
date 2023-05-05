@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+	<title>Student Profile</title>
+</head>
+
+
+<body>
+<div class="container">
+  <div class="row justify-content-center mt-3">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4>Professor Profile</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label for="username" class="col-md-4 col-form-label text-md-right">Username:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${username}"></p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="email" class="col-md-4 col-form-label text-md-right">Email:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${email}"></p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="fullName" class="col-md-4 col-form-label text-md-right">Full Name:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${fullName}"></p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="role" class="col-md-4 col-form-label text-md-right">Role:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${role}"></p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="speciality" class="col-md-4 col-form-label text-md-right">Speciality:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${speciality}"></p>
+            </div>
+          </div>
+          <div class="text-md-right">
+            <a th:href="@{/}" class="btn btn-primary btn-sm mb-3">Home</a>
+            <a th:href="@{/logout}" class="btn btn-danger btn-sm mb-3">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+  
+</body>
+</html>
