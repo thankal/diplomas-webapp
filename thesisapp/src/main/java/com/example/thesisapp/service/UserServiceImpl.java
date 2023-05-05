@@ -41,4 +41,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	                        String.format("USER_NOT_FOUND", username)
 	                ));
 	}
+
+	@Override
+	public User getUserByUsername(String username) {
+		return userDAO.findByUsername(username).orElseThrow(
+				()-> new UsernameNotFoundException(
+						String.format("USER_NOT_FOUND", username)
+				));
+
+	}
 }

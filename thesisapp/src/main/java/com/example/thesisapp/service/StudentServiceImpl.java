@@ -2,10 +2,12 @@ package com.example.thesisapp.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.thesisapp.dao.StudentDAO;
 import com.example.thesisapp.model.Student;
+import com.example.thesisapp.model.User;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -18,5 +20,12 @@ public class StudentServiceImpl implements StudentService {
 	public void saveStudent(Student student) {
         studentDAO.save(student);	
     }
+
+	@Override
+	public Student findStudentByUser(User user) {
+		return studentDAO.findByUser(user).orElseThrow(
+				()-> new RuntimeException("STUDENT_NOT_FOUND")
+			);
+	}
 
 }
