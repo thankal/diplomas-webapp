@@ -6,14 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    -->
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <link rel="stylesheet" href="dashboardStyle.css">
 	<title>User Dashboard</title>
 </head>
 
 
-<body>
+<body> 
+  <header class="header">
+  
+    <h2 class="title"> Welcome to User Dashboard </h2>
+    <nav class="navbar">
+  
+      <a href="#"> <span sec:authentication="name">Guest</span> </a>
+      <a> <small> <span sec:authentication="authorities">Authority</span> </small> </a>
+      <button class="btnLogout-popup">Logout</button>
 
+    </nav>
+  
+  </header>
+
+
+
+
+
+
+
+
+<!-- this is the dashboard page as it was before the changes 
 <div class="container">
 
   <h2>Welcome to User Dashboard</h2>
@@ -32,6 +55,6 @@
     </p>
 
 </div>
-
+-->
 </body>
 </html>
