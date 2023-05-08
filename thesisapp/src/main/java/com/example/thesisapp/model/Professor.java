@@ -72,6 +72,11 @@ public class Professor{
 		this.user = user;
 	}
 
+	@Override
+	public String toString() {
+		return "Professor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", speciality="
+				+ speciality + "]";
+	}	
 
 	
 	
