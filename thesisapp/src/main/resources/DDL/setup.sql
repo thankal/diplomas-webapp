@@ -89,3 +89,52 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.students
     OWNER to postgres;
+
+-- Table: public.thesis
+
+-- DROP TABLE IF EXISTS public.thesis;
+
+CREATE TABLE IF NOT EXISTS public.thesis
+(
+    thesis_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    title character varying(500) COLLATE pg_catalog."default" NOT NULL,
+    objectives character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    prof_fk bigint NOT NULL,
+    CONSTRAINT thesis_pkey PRIMARY KEY (thesis_id),
+    CONSTRAINT thesis_teacher_fk_fkey FOREIGN KEY (prof_fk)
+        REFERENCES public.professors (prof_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.thesis
+    OWNER to postgres;
+
+-- Table: public.applications
+
+-- DROP TABLE IF EXISTS public.applications;
+
+CREATE TABLE IF NOT EXISTS public.applications
+(
+    application_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    student_fk bigint NOT NULL,
+    thesis_fk bigint NOT NULL,
+    CONSTRAINT applications_pkey PRIMARY KEY (application_id),
+    CONSTRAINT applications_student_fk_fkey FOREIGN KEY (student_fk)
+        REFERENCES public.students (student_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT applications_thesis_fk_fkey FOREIGN KEY (thesis_fk)
+        REFERENCES public.thesis (thesis_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.applications
+    OWNER to postgres;
