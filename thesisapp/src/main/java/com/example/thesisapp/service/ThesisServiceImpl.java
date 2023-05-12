@@ -42,7 +42,7 @@ public class ThesisServiceImpl implements ThesisService{
 			return result;
 		}
 		else {
-			// we didn't find the employee
+			// we didn't find the thesis
 			throw new RuntimeException("Did not find thesis id - " + theId);
 		}
 	}
