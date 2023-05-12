@@ -59,17 +59,21 @@ public class ThesisController {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String currentUid = userDetails.getUsername();
 		User currentUser = userService.getUserByUsername(currentUid);
-        Student student = studentService.findStudentByUser(currentUser);
-
+		
 		// get employees from db
 		List<Thesis> theThesis = thesisService.findAll();
 		
 		// add to the spring model
 		theModel.addAttribute("thesis", theThesis);
+		
+		System.out.println(currentUser.getRole().getValue()); // TODO: del
+		if (currentUser.getRole().getValue().equals("Student")) {
 
-		List<Long> appliedThesisIds = applicationService.getApplicationIdsByStudentId(student.getId());
-		System.out.println(appliedThesisIds); // TODO: del
-		theModel.addAttribute("appliedThesisIds", appliedThesisIds);
+			Student student = studentService.findStudentByUser(currentUser);
+			List<Long> appliedThesisIds = applicationService.getApplicationIdsByStudentId(student.getId());
+			System.out.println(appliedThesisIds); // TODO: del
+			theModel.addAttribute("appliedThesisIds", appliedThesisIds);
+		}
 		
 		return "thesis/list-thesis";
 	}

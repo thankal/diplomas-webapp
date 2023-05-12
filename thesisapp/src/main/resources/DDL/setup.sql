@@ -126,11 +126,12 @@ CREATE TABLE IF NOT EXISTS public.applications
     CONSTRAINT applications_student_fk_fkey FOREIGN KEY (student_fk)
         REFERENCES public.students (student_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE
+        NOT VALID,
     CONSTRAINT applications_thesis_fk_fkey FOREIGN KEY (thesis_fk)
         REFERENCES public.thesis (thesis_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
         NOT VALID
 )
 
