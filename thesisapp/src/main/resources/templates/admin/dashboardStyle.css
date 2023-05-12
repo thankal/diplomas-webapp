@@ -1,0 +1,104 @@
+@import url('<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px 100px;
+    background: rgb(2, 151, 151);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.title{
+    font-size: 2em;
+    color: #fff;
+    user-select: none;
+}
+
+.navbar a{
+    position: relative;
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 30px;
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    border-radius: 5px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: .5s;
+}
+
+.navbar a:hover::after{
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+.navbar .btnLogout-popup{
+    width: 130px;
+    height: 40px;
+    background: transparent;
+    border: 2px solid #fff;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 1.1em;
+    margin-left: 40px;
+    color: #fff;
+    transition: .3s;
+}
+
+.navbar .btnLogout-popup:hover{
+    background: #fff;
+    color: rgb(2, 151, 151);
+}
+
+.navbar .profile a{
+    position: relative;
+    width: 100%;
+    height: 20px;
+    border-radius: 50%;
+    overflow: '';
+    cursor: pointer;
+}
+
+.navbar .profile a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    border-radius: 5px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: .5s;
+}
+
+.navbar .profile a:hover::after{
+    transform: translateY(0px);
+    opacity: 1;
+}
