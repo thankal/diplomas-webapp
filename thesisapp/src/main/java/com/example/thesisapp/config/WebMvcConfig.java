@@ -12,12 +12,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("homepage");
     }
 
-    // @Override
-    // public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
-    //     registry.addResourceHandler("/js/**")
-    //     .addResourceLocations("classpath:/static/js/")
-    //     .setCachePeriod(0);
-    // }
+    @Override
+    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/js/**")
+        .addResourceLocations("classpath:/static/js/")
+        .setCachePeriod(0);
+    }
 
 
 }

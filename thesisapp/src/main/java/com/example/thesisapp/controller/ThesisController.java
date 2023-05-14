@@ -65,6 +65,8 @@ public class ThesisController {
 		
 		// add to the spring model
 		theModel.addAttribute("thesis", theThesis);
+
+
 		
 		// System.out.println(currentUser.getRole().getValue()); // TODO: del
 		if (currentUser.getRole().getValue().equals("Student")) {
@@ -73,6 +75,11 @@ public class ThesisController {
 			List<Long> appliedThesisIds = applicationService.getApplicationIdsByStudentId(student.getId());
 			// System.out.println(appliedThesisIds); // TODO: del
 			theModel.addAttribute("appliedThesisIds", appliedThesisIds);
+		}
+
+		else {
+			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+			theModel.addAttribute("currentProfessor", currentProfessor);
 		}
 		
 		return "thesis/list-thesis";
