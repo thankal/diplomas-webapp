@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.thesisapp.dao.ApplicationDAO;
 import com.example.thesisapp.dao.ProfessorDAO;
 import com.example.thesisapp.model.Application;
+import com.example.thesisapp.model.Student;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -52,6 +53,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 		}
 		
 		return applicationIds;
+	}
+
+	@Override
+	public List<Student> getStudentsApplied(Long thesisId) {
+		return applicationDao.findStudentsByThesisId(thesisId);
 	}
 
 }

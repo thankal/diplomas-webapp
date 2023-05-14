@@ -60,22 +60,46 @@ public class ThesisController {
 		String currentUid = userDetails.getUsername();
 		User currentUser = userService.getUserByUsername(currentUid);
 		
-		// get employees from db
+		// get all available thesis from db
 		List<Thesis> theThesis = thesisService.findAll();
 		
 		// add to the spring model
 		theModel.addAttribute("thesis", theThesis);
 		
-		System.out.println(currentUser.getRole().getValue()); // TODO: del
+		// System.out.println(currentUser.getRole().getValue()); // TODO: del
 		if (currentUser.getRole().getValue().equals("Student")) {
 
 			Student student = studentService.findStudentByUser(currentUser);
 			List<Long> appliedThesisIds = applicationService.getApplicationIdsByStudentId(student.getId());
-			System.out.println(appliedThesisIds); // TODO: del
+			// System.out.println(appliedThesisIds); // TODO: del
 			theModel.addAttribute("appliedThesisIds", appliedThesisIds);
 		}
 		
 		return "thesis/list-thesis";
+	}
+	
+	@RequestMapping("/detail")
+	public String detailEmployees(Model theModel, @RequestParam("thesisId") long thesisId){
+									
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+		
+		// get the selected thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// add to the spring model
+		theModel.addAttribute("thesis", theThesis);
+
+		List<Student> studentsApplied = applicationService.getStudentsApplied(thesisId);
+		System.out.println(studentsApplied);
+		theModel.addAttribute("studentsApplied", studentsApplied);
+
+		theModel.addAttribute("numOfApplications", studentsApplied.size());
+		
+		return "thesis/detail-thesis";
 	}
 	
 	@RequestMapping("/showFormForAdd")
@@ -90,7 +114,7 @@ public class ThesisController {
 	}
 
 	@RequestMapping("/showFormForUpdate")
-	public String showFormForUpdate(@RequestParam("thesisId") int theId,
+	public String showFormForUpdate(@RequestParam("thesisId") long theId,
 									Model theModel) {
 		
 		// get the thesis from the service

@@ -27,11 +27,13 @@
 			<!-- Add hidden form field to handle update -->
 			<input type="hidden" th:field="*{id}" />
 			
+            <label>Title</label>
 			<input type="text" th:field="*{title}"
-					class="form-control mb-4 col-4" placeholder="Title">
+					class="form-control mb-4 col-4" placeholder="Enter the title of the thesis subject">
 
-			<input type="text" th:field="*{objectives}"
-					class="form-control mb-4 col-4" placeholder="Description">
+            <label>Objectives</label>
+			<textarea type="text" rows="10" th:field="*{objectives}"
+					class="form-control mb-4 col-12" placeholder="Enter the objectives of the subject and a small description"></textarea>
 
 			<button type="submit" class="btn btn-info col-2">Save</button>
 						

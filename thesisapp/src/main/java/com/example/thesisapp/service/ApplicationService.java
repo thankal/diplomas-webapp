@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.thesisapp.model.Application;
+import com.example.thesisapp.model.Student;
 
 
 @Service
@@ -20,6 +21,8 @@ public interface ApplicationService {
     public List<Long> getApplicationIdsByStudentId(Long studentId);
 
     public Application getApplicationByStudentIdAndThesisId(Long studentId, Long thesisId);
+
+    public List<Student> getStudentsApplied(Long thesisId);
     
     // public Professor findProfessorByUser(User user);
 }

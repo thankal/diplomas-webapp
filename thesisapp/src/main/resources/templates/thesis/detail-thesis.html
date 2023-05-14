@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+	<style>
+		.container-fluid {
+			height: 100vh;
+		}
+		
+		.card-body {
+			overflow: auto;
+			max-height: 80vh;
+		}
+	</style>
+
+	<title>Student Profile</title>
+</head>
+
+
+<body>
+<div class="container-fluid h-100">
+  <div class="row h-100 justify-content-center mt-3">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4>Thesis Details</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label for="title" class="col-md-4 col-form-label text-md-right">Diploma Thesis Subject Title:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext font-weight-bold" th:text="${thesis.title}"></p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="objectives" class="col-md-4 col-form-label text-md-right">Objectives:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${thesis.objectives}"></p>
+            </div>
+          </div>
+		  <hr>
+          <div class="form-group row">
+            <label for="objectives" class="col-md-4 col-form-label text-md-right">Number of applications:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${numOfApplications}"></p>
+            </div>
+          </div>
+            <div class="form-group mt-5">
+              <p class="col-form-label text-center">List of Applicants:</p>
+            <div class="col-md-12">
+				<table class="table table-hover caption-top table-sm">
+					<thead class="thead-dark">
+						<tr>
+							<th class="col-3">First Name</th>
+							<th class="col-3">Last Name</th>
+							<th class="col-3">Email</th>
+							<th class="col-1">Years of Study</th>
+							<th class="col-1">Courses Remaining</th>
+							<th class="col-1">Average Grade</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="student : ${studentsApplied}" >
+						
+							<td th:text="${student.firstName}" class="col-3 table-link"/>	
+							<td th:text="${student.lastName}" class="col-3 table-link"/>	
+							<td th:text="${student.user.email}" class="col-3 table-link"/>	
+							<td th:text="${student.yearOfStudies}" class="col-3 table-link"/>	
+							<td th:text="${student.remainingCourses}" class="col-1 table-link"/>	
+							<td th:text="${student.averageGrade}" class="col-1 table-link"/>	
+							</td>
+						</tr>
+					</tbody>		
+				</table>
+            </div>
+
+          </div>
+
+        </div>
+	</div>
+	<div class="text-md-right mt-2">
+	  <!--<a th:href="@{/}" class="btn btn-success btn-sm mb-3">Home</a>-->
+	  <a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
+	</div>
+    </div>
+  </div>
+</div>
+
+  
+  
+</body>
+</html>

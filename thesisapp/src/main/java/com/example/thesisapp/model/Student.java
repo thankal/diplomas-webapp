@@ -94,7 +94,11 @@ public class Student{
 		this.user = user;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", yearsOfStudy="
+				+ yearOfStudies + ", averageGrade=" + averageGrade + ", remainingCourses=" + remainingCourses + "]";
+	}	
 	
 }
 

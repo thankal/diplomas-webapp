@@ -13,15 +13,26 @@
 	<!-- Link to external resource (css, search, etc.) -->
     <!-- Link to Bootstrap CSS in this case -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!--<script type="application/javascript" th:src="@{/js/thesis.js}"></script>-->
 
-	<title>Thesis Directory</title>
+
+	<title>Thesis List</title>
+
+	<style>
+		.table-link:hover {
+			cursor: pointer;
+			text-decoration: underline;
+		}
+	</style>
 </head>
 
 <body>
 
 <div class="container">
 
-	<h3>Thesis Directory</h3>
+	<h3>Thesis Subjects List</h3>
 	<hr>
 	
 	<!-- Add a button -->
@@ -31,20 +42,23 @@
 	</a>
 	
 	
-	<table class="table table-bordered table-striped">
+	<table class="table table-bordered table-hover">
 		<thead class="thead-dark">
 			<tr>
-				<th>Title</th>
-				<th>Description</th>
-				<th>Action</th>
+				<th class="col-9">Title</th>
+				<!-- <th>Description</th> -->
+				<th scope="col-3">Action</th>
 			</tr>
 		</thead>
 		
 		<tbody>
-			<tr th:each="tempThesis : ${thesis}">
-			
-				<td th:text="${tempThesis.title}" />	
-				<td th:text="${tempThesis.objectives}" />	
+
+			<tr th:each="tempThesis : ${thesis}" >
+				
+				<td  class="col-9 table-link">
+					<a th:text="${tempThesis.title}" th:href="@{/thesis/detail(thesisId=${tempThesis.id})}"> </a>
+				</td>
+				<!-- <td th:text="${tempThesis.objectives}" />	 -->
 				
 				<td>
 					<a sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/showFormForUpdate(thesisId=${tempThesis.id})}"
@@ -80,6 +94,28 @@
     <span th:utext="${applicationExists}"></span>
 	<a th:href="@{/}" class="btn btn-secondary btn-sm mb-3">Home</a>
 </div>
+
+
+<!-- The detail view modal TODO: unsused-->
+<div class="modal fade" id="detail-modal" tabindex="-1" role="dialog" aria-labelledby="modal1Label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detail-modal-title">Thesis Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- modal content goes here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 	
 </body>
 </html>
