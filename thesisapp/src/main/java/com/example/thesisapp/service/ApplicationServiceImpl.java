@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.thesisapp.dao.ApplicationDAO;
-import com.example.thesisapp.dao.ProfessorDAO;
 import com.example.thesisapp.model.Application;
 import com.example.thesisapp.model.Student;
 
@@ -32,8 +33,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 	}
 
 	@Override
+	@Transactional
 	public void cancelApplication(Long applicationId) {
 		applicationDao.deleteById(applicationId);
+	}
+
+	@Override
+	@Transactional
+	public void cancelAllAplications() {
+		applicationDao.deleteAll();
 	}
 
 	@Override
@@ -59,5 +67,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public List<Student> getStudentsApplied(Long thesisId) {
 		return applicationDao.findStudentsByThesisId(thesisId);
 	}
+
+
 
 }

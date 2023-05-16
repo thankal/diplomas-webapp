@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.thesisapp.model.Application;
+import com.example.thesisapp.model.Assignment;
+import com.example.thesisapp.model.BestAverageSelectionStrategy;
+import com.example.thesisapp.model.FewestCoursesSelectionStrategy;
 import com.example.thesisapp.model.Professor;
+import com.example.thesisapp.model.RandomSelectionStrategy;
+import com.example.thesisapp.model.SelectionStrategy;
 import com.example.thesisapp.model.Student;
 import com.example.thesisapp.model.Thesis;
+import com.example.thesisapp.model.ThresholdSelectionStrategy;
 import com.example.thesisapp.model.User;
 import com.example.thesisapp.service.ApplicationService;
+import com.example.thesisapp.service.AssignmentService;
 import com.example.thesisapp.service.ProfessorService;
 import com.example.thesisapp.service.StudentService;
 import com.example.thesisapp.service.ThesisService;
@@ -45,6 +52,9 @@ public class ThesisController {
     
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private AssignmentService assignmentService;
 	
 	@Autowired
 	public ThesisController(ThesisService theThesisService) {
@@ -53,7 +63,7 @@ public class ThesisController {
 	
 
 	@RequestMapping("/list")
-	public String listEmployees(Model theModel) {
+	public String listThesis(Model theModel) {
 		// useful for getting the current user for the rest 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -86,7 +96,7 @@ public class ThesisController {
 	}
 	
 	@RequestMapping("/detail")
-	public String detailEmployees(Model theModel, @RequestParam("thesisId") long thesisId){
+	public String detailThesis(Model theModel, @RequestParam("thesisId") long thesisId){
 									
 		// useful for getting the current user for the rest 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -101,12 +111,135 @@ public class ThesisController {
 		theModel.addAttribute("thesis", theThesis);
 
 		List<Student> studentsApplied = applicationService.getStudentsApplied(thesisId);
-		System.out.println(studentsApplied);
 		theModel.addAttribute("studentsApplied", studentsApplied);
 
 		theModel.addAttribute("numOfApplications", studentsApplied.size());
+
+		// get the assigned student if there is one
+		Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElse(null);
+		theModel.addAttribute("studentAssigned", studentAssigned);
+
 		
 		return "thesis/detail-thesis";
+	}
+	
+	@RequestMapping("/assign")
+	public String assignThesis(Model model, @RequestParam("thesisId") long thesisId){
+									
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+
+		
+		// get the selected thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// add to the spring model
+		model.addAttribute("thesis", theThesis);
+
+		List<Student> studentsApplied = applicationService.getStudentsApplied(thesisId);
+		model.addAttribute("studentsApplied", studentsApplied);
+		model.addAttribute("numOfApplications", studentsApplied.size());
+
+
+		// get the assigned student if there is one
+		Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElse(null);
+		model.addAttribute("studentAssigned", studentAssigned);
+
+		
+		return "thesis/assign-thesis";
+	}
+
+	// User selects a strategy and confirms the assignment
+	@PostMapping("/assign")
+	public String confirmAssignmentThesis(Model theModel, @RequestParam("thesisId") long thesisId,
+															@RequestParam("strategy") String strategyOption,
+															@RequestParam(value="th1", required=false) Double th1,
+															@RequestParam(value="th2", required=false) Integer th2){
+									
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+
+        Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+
+		SelectionStrategy strategy;
+		if (strategyOption.equals("random")) {
+			strategy = new RandomSelectionStrategy();
+		}
+		else if (strategyOption.equals("average")) {
+			strategy = new BestAverageSelectionStrategy();
+		}
+		else if (strategyOption.equals("fewest")) {
+			strategy = new FewestCoursesSelectionStrategy();
+		}
+		else if (strategyOption.equals("threshold")) {
+			strategy = new ThresholdSelectionStrategy(th1, th2);
+		}
+		else {
+			// throw error
+			return "redirect:/thesis/list";
+		}
+
+		// get the list of candidates that applied and get the winner
+		List<Student> studentsApplied = applicationService.getStudentsApplied(thesisId);
+		Student selectedStudent = strategy.selectCandidate(studentsApplied);
+
+
+		// get the current thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == theThesis.getProfessor()) {
+
+			if(assignmentService.assignmentExists(thesisId, selectedStudent.getId())){
+				// System.out.println("Assignment for this thesis already exists!");
+				theModel.addAttribute("assignmentExists", "There is already an assignment for this thesis!");
+				// redirect back to the assignment page
+				return "redirect:/thesis/assign?thesisId=" + thesisId;
+			}
+
+			// ..and then make the new updated assignment
+			Assignment theAssignment = new Assignment();
+			theAssignment.setStudent(selectedStudent);
+			theAssignment.setThesis(theThesis);
+			assignmentService.save(theAssignment);
+			applicationService.cancelAllAplications();
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+
+		
+        // redirect back to the assignment page
+		return "redirect:/thesis/assign?thesisId=" + thesisId;
+	}
+
+	@RequestMapping("/cancelAssignment")
+	public String cancelAssignmentThesis(Model theModel, @RequestParam("thesisId") long thesisId){
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+        Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+
+        Thesis thesis = thesisService.findById(thesisId);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == thesis.getProfessor()) {
+			// cancel existing assignment
+			if (assignmentService.assignmentExists(thesisId)) {
+				assignmentService.cancelAssignmentByThesisId(thesisId);
+			}
+		}
+		
+		return "redirect:/thesis/assign?thesisId=" + thesisId;
 	}
 	
 	@RequestMapping("/showFormForAdd")

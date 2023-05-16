@@ -63,6 +63,10 @@ public class WebSecurityConfig {
                 .antMatchers("/thesis/showFormForAdd/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user
                 .antMatchers("/thesis/showFormForUpdate/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user
                 .antMatchers("/thesis/delete/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user
+                .antMatchers("/thesis/assign/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user
+                .antMatchers("/thesis/evaluate/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user
+                .antMatchers("/thesis/apply/**").hasAnyAuthority("STUDENT") // ??? ZAS is this needed ??? - changed from account to user
+                .antMatchers("/thesis/cancel/**").hasAnyAuthority("STUDENT") // ??? ZAS is this needed ??? - changed from account to user
                 .anyRequest().authenticated()
                 .and()
                 // form login

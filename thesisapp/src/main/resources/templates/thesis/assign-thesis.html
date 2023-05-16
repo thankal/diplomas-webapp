@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <script th:src="@{/js/assign.js}"></script>
+
+	<style>
+		.container-fluid {
+			height: 100vh;
+		}
+		
+		.card-body {
+			overflow: auto;
+			max-height: 80vh;
+		}
+	</style>
+
+	<title>Thesis Assign</title>
+</head>
+
+
+<body>
+	<div class="container">
+	
+		<h3>Thesis Assign</h3>
+		<hr>
+		
+		<p class="h4 mb-4">Assign Thesis to Student</p>
+	
+		<form th:object="${thesis}" method="POST">
+		
+          <div class="form-group row">
+            <label for="title" class="col-md-4 col-form-label text-md-right">Diploma Thesis Subject Title:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext font-weight-bold" th:text="${thesis.title}"></p>
+            </div>
+          </div>
+
+          <div th:if="${studentAssigned!=null && numOfApplications>0}" class="form-group row">
+            <label for="objectives" class="col-md-4 col-form-label text-md-right">Number of applications:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext" th:text="${numOfApplications}"></p>
+            </div>
+          </div>
+
+			<div th:if="${numOfApplications==0 && studentAssigned==null}" class="col-md-12">
+				<p class="text-center form-control-plaintext">There are no applicants to this thesis subject yet! </p>
+			</div>
+
+
+
+
+			<!-- show the selected student -->
+			<div th:if="${studentAssigned}">
+				<p class="col-form-label text-center">Assigned student:</p>
+				<div class="col-md-12">
+					<table class="table table-hover caption-top table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th class="col-3">First Name</th>
+								<th class="col-3">Last Name</th>
+								<th class="col-3">Email</th>
+								<th class="col-1">Years of Study</th>
+								<th class="col-1">Courses Remaining</th>
+								<th class="col-1">Average Grade</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr>
+								<td th:text="${studentAssigned.firstName}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.lastName}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.user.email}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.yearOfStudies}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.remainingCourses}" class="col-1 table-link"/>	
+								<td th:text="${studentAssigned.averageGrade}" class="col-1 table-link"/>	
+								</td>
+							</tr>
+						</tbody>		
+					</table>
+				</div>
+			</div>
+
+			<div th:if="${studentAssigned!=null && numOfApplications>1}">
+				<p class="col-form-label text-center">List of Applicants:</p>
+				<div class="col-md-12">
+					<table class="table table-hover caption-top table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th class="col-3">First Name</th>
+								<th class="col-3">Last Name</th>
+								<th class="col-3">Email</th>
+								<th class="col-1">Years of Study</th>
+								<th class="col-1">Courses Remaining</th>
+								<th class="col-1">Average Grade</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr th:each="student : ${studentsApplied}" >
+								<td th:text="${student.firstName}" class="col-3 table-link"/>	
+								<td th:text="${student.lastName}" class="col-3 table-link"/>	
+								<td th:text="${student.user.email}" class="col-3 table-link"/>	
+								<td th:text="${student.yearOfStudies}" class="col-3 table-link"/>	
+								<td th:text="${student.remainingCourses}" class="col-1 table-link"/>	
+								<td th:text="${student.averageGrade}" class="col-1 table-link"/>	
+								</td>
+							</tr>
+						</tbody>		
+					</table>
+				</div>
+            </div>
+
+
+			<div th:unless="${studentAssigned}" class="form-row">
+				<div class="col form-group">
+				<label>Selection strategy:</label>
+				<select name="strategy" class="custom-select" required>
+					<option value="disabled" disabled >Choose a Strategy</option>
+					<option value="random">Random Choice</option>
+					<option value="average">Best average courses grade</option>
+					<option value="fewest">Fewest remaining courses for graduation</option>
+					<option value="threshold">Average courses grade greater than a threshold and number of remaining courses less than a threshold</option>
+				</select>
+				</div> 
+			</div> 
+
+			<div class="threshold-fields">
+				<div class="form-row">
+					<div class="col-md-12 form-group">
+					<label>Average Courses Grade Threshold:</label>
+					<input type="numeric" name"th1" class="form-control" placeholder="" required>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12 form-group">
+					<label>Remaining Courses Threshold:</label>
+					<input type="numeric" name="th2" class="form-control" placeholder="" required>
+					</div>
+				</div>
+			</div>
+
+			
+			
+			
+			<button th:unless="${studentAssigned}" type="submit" class="btn btn-info col-2">Assign</button>
+			<a th:if="${studentAssigned}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/cancelAssignment(thesisId=${thesis.id})}"
+			class="btn btn-warning btn-sm" 
+			onclick="if (!(confirm('Are you sure you want to cancel the assigned student from this thesis?'))) return false">
+				Cancel Assignment
+			</a>
+			
+		</form>
+		
+		<hr>
+
+		<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
+		
+	</div>
+  
+  
+</body>
+</html>

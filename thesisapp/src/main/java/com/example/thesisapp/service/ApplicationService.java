@@ -1,7 +1,6 @@
 package com.example.thesisapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,8 @@ public interface ApplicationService {
 
 	public void cancelApplication(Long applicationId);
 
-    // TODO; maybe not needed
+	public void cancelAllAplications();
+
     public boolean applicationExists(Long sudentId, Long thesisId);
 
     public List<Long> getApplicationIdsByStudentId(Long studentId);

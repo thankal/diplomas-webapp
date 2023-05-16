@@ -23,6 +23,8 @@ public interface ApplicationDAO extends JpaRepository<Application, Long>{
 
     void deleteById(Long applicationId);
 
+    void deleteAll();
+
     List<Application> findByStudentId(Long studentId);
 
     @Query("SELECT app.student FROM Application app WHERE app.thesis.id = :thesisId")
