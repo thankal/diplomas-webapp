@@ -6,8 +6,7 @@ CREATE DATABASE thesisdb
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'
-    -- LC_COLLATE = 'en_US.UTF-8'
-    -- LC_CTYPE = 'en_US.UTF-8'
+
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1
     IS_TEMPLATE = False;
@@ -20,7 +19,7 @@ GRANT ALL ON DATABASE thesisdb TO postgres;
 
 -- Table: public.users
 
-DROP TABLE IF EXISTS public.users;
+DROP TABLE IF EXISTS public.users CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
@@ -41,7 +40,7 @@ ALTER TABLE IF EXISTS public.users
 
 -- Table: public.professors
 
--- DROP TABLE IF EXISTS public.professors;
+DROP TABLE IF EXISTS public.professors CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.professors
 (
@@ -54,7 +53,7 @@ CREATE TABLE IF NOT EXISTS public.professors
     CONSTRAINT professors_user_fk_fkey FOREIGN KEY (user_fk)
         REFERENCES public.users (user_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -66,7 +65,7 @@ ALTER TABLE IF EXISTS public.professors
 
 -- Table: public.students
 
--- DROP TABLE IF EXISTS public.students;
+DROP TABLE IF EXISTS public.students CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.students
 (
@@ -81,7 +80,7 @@ CREATE TABLE IF NOT EXISTS public.students
     CONSTRAINT user_fk FOREIGN KEY (user_fk)
         REFERENCES public.users (user_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
         NOT VALID
 )
 
@@ -92,7 +91,7 @@ ALTER TABLE IF EXISTS public.students
 
 -- Table: public.thesis
 
--- DROP TABLE IF EXISTS public.thesis;
+DROP TABLE IF EXISTS public.thesis CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.thesis
 (
@@ -104,7 +103,7 @@ CREATE TABLE IF NOT EXISTS public.thesis
     CONSTRAINT thesis_teacher_fk_fkey FOREIGN KEY (prof_fk)
         REFERENCES public.professors (prof_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
         NOT VALID
 )
 
@@ -115,7 +114,7 @@ ALTER TABLE IF EXISTS public.thesis
 
 -- Table: public.applications
 
--- DROP TABLE IF EXISTS public.applications;
+DROP TABLE IF EXISTS public.applications CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.applications
 (
@@ -143,7 +142,7 @@ ALTER TABLE IF EXISTS public.applications
 
 -- Table: public.assignments
 
--- DROP TABLE IF EXISTS public.assignments;
+DROP TABLE IF EXISTS public.assignments CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.assignments
 (
@@ -154,7 +153,7 @@ CREATE TABLE IF NOT EXISTS public.assignments
     CONSTRAINT assignments_student_fk_fkey FOREIGN KEY (student_fk)
         REFERENCES public.students (student_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE,
     CONSTRAINT assignments_thesis_fk_fkey FOREIGN KEY (thesis_fk)
         REFERENCES public.thesis (thesis_id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -169,7 +168,7 @@ ALTER TABLE IF EXISTS public.assignments
 
 -- Table: public.grades
 
--- DROP TABLE IF EXISTS public.grades;
+DROP TABLE IF EXISTS public.grades CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.grades
 (
