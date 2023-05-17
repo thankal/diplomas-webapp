@@ -10,4 +10,6 @@ public interface ProfessorService {
 	public void saveProfessor(Professor professor);
 
     public Professor findProfessorByUser(User user);
+
+	public Professor findById(Long id);
 }

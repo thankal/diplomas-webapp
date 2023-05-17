@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS public.professors
     CONSTRAINT professors_pkey PRIMARY KEY (prof_id),
     CONSTRAINT professors_user_fk_fkey FOREIGN KEY (user_fk)
         REFERENCES public.users (user_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS public.students
     CONSTRAINT students_pkey PRIMARY KEY (student_id),
     CONSTRAINT user_fk FOREIGN KEY (user_fk)
         REFERENCES public.users (user_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
         NOT VALID
 )
 
@@ -103,8 +103,8 @@ CREATE TABLE IF NOT EXISTS public.thesis
     CONSTRAINT thesis_pkey PRIMARY KEY (thesis_id),
     CONSTRAINT thesis_teacher_fk_fkey FOREIGN KEY (prof_fk)
         REFERENCES public.professors (prof_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
         NOT VALID
 )
 
@@ -125,12 +125,12 @@ CREATE TABLE IF NOT EXISTS public.applications
     CONSTRAINT applications_pkey PRIMARY KEY (application_id),
     CONSTRAINT applications_student_fk_fkey FOREIGN KEY (student_fk)
         REFERENCES public.students (student_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
+        ON UPDATE CASCADE
         ON DELETE CASCADE
         NOT VALID,
     CONSTRAINT applications_thesis_fk_fkey FOREIGN KEY (thesis_fk)
         REFERENCES public.thesis (thesis_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
+        ON UPDATE CASCADE
         ON DELETE CASCADE
         NOT VALID
 )
@@ -138,4 +138,56 @@ CREATE TABLE IF NOT EXISTS public.applications
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.applications
+    OWNER to postgres;
+
+
+-- Table: public.assignments
+
+-- DROP TABLE IF EXISTS public.assignments;
+
+CREATE TABLE IF NOT EXISTS public.assignments
+(
+    assignment_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    thesis_fk bigint NOT NULL,
+    student_fk bigint NOT NULL,
+    CONSTRAINT assignments_pkey PRIMARY KEY (assignment_id),
+    CONSTRAINT assignments_student_fk_fkey FOREIGN KEY (student_fk)
+        REFERENCES public.students (student_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT assignments_thesis_fk_fkey FOREIGN KEY (thesis_fk)
+        REFERENCES public.thesis (thesis_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.assignments
+    OWNER to postgres;
+
+
+-- Table: public.grades
+
+-- DROP TABLE IF EXISTS public.grades;
+
+CREATE TABLE IF NOT EXISTS public.grades
+(
+    eval_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    implementation double precision,
+    report double precision,
+    presentation double precision,
+    total double precision,
+    assignment_fk bigint NOT NULL,
+    CONSTRAINT evaluations_pkey PRIMARY KEY (eval_id),
+    CONSTRAINT grades_assignment_fk_fkey FOREIGN KEY (assignment_fk)
+        REFERENCES public.assignments (assignment_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.grades
     OWNER to postgres;

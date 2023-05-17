@@ -71,20 +71,30 @@ public class ThesisController {
 		User currentUser = userService.getUserByUsername(currentUid);
 		
 		// get all available thesis from db
-		List<Thesis> theThesis = thesisService.findAll();
+		List<Thesis> thesisList = thesisService.findAll();
+
+		List<Professor> professorList = new ArrayList<Professor>();
+		for (Thesis thesis : thesisList) {
+			if (!professorList.contains(thesis.getProfessor())) {
+				professorList.add(thesis.getProfessor());
+			}
+		}
+
 		
 		// add to the spring model
-		theModel.addAttribute("thesis", theThesis);
+		theModel.addAttribute("thesis", thesisList);
+		theModel.addAttribute("professors", professorList);
 
 
-		
-		// System.out.println(currentUser.getRole().getValue()); // TODO: del
 		if (currentUser.getRole().getValue().equals("Student")) {
 
 			Student student = studentService.findStudentByUser(currentUser);
 			List<Long> appliedThesisIds = applicationService.getApplicationIdsByStudentId(student.getId());
-			// System.out.println(appliedThesisIds); // TODO: del
+			List<Long> assignedThesisIds = assignmentService.getThesisIds();
+			Long myAssignedThesisId = assignmentService.getThesisIdByStudent(student.getId()).orElse(null);
 			theModel.addAttribute("appliedThesisIds", appliedThesisIds);
+			theModel.addAttribute("assignedThesisIds", assignedThesisIds);
+			theModel.addAttribute("myAssignedThesisId", myAssignedThesisId);
 		}
 
 		else {
@@ -119,6 +129,11 @@ public class ThesisController {
 		Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElse(null);
 		theModel.addAttribute("studentAssigned", studentAssigned);
 
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+			theModel.addAttribute("currentProfessor", currentProfessor);
+		}
+	
 		
 		return "thesis/detail-thesis";
 	}
@@ -131,6 +146,16 @@ public class ThesisController {
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 		String currentUid = userDetails.getUsername();
 		User currentUser = userService.getUserByUsername(currentUid);
+
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+			model.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+
 
 		
 		// get the selected thesis from db
@@ -147,6 +172,7 @@ public class ThesisController {
 		// get the assigned student if there is one
 		Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElse(null);
 		model.addAttribute("studentAssigned", studentAssigned);
+
 
 		
 		return "thesis/assign-thesis";
@@ -165,7 +191,15 @@ public class ThesisController {
 		String currentUid = userDetails.getUsername();
 		User currentUser = userService.getUserByUsername(currentUid);
 
-        Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+		Professor currentProfessor;
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			currentProfessor = professorService.findProfessorByUser(currentUser);
+			theModel.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
 
 		SelectionStrategy strategy;
 		if (strategyOption.equals("random")) {
@@ -187,7 +221,14 @@ public class ThesisController {
 
 		// get the list of candidates that applied and get the winner
 		List<Student> studentsApplied = applicationService.getStudentsApplied(thesisId);
-		Student selectedStudent = strategy.selectCandidate(studentsApplied);
+		Student selectedStudent;
+		if (!studentsApplied.isEmpty()) {
+			selectedStudent = strategy.selectCandidate(studentsApplied);
+		}
+		else {
+			// no students applied
+			return "redirect:/thesis/assign?thesisId=" + thesisId;
+		}
 
 
 		// get the current thesis from db
@@ -208,7 +249,12 @@ public class ThesisController {
 			theAssignment.setStudent(selectedStudent);
 			theAssignment.setThesis(theThesis);
 			assignmentService.save(theAssignment);
-			applicationService.cancelAllAplications();
+
+			// also cancel all other applications for this thesis
+			applicationService.cancelApplicationsForThesis(thesisId);
+
+			// and all applications for this student
+			applicationService.cancelApplicationsByStudent(selectedStudent.getId());
 		}
 		else {
 			// not allowed TODO: maybe throw a forbidden message?

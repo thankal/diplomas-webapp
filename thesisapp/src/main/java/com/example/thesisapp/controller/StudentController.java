@@ -2,10 +2,12 @@ package com.example.thesisapp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 
 import com.example.thesisapp.model.Student;
@@ -23,11 +25,25 @@ public class StudentController {
     StudentService studentService;
 
     @RequestMapping("/student/profile")
-    public String getUserHome(Model model, Authentication authentication){
+    public String getUserHome(Model model, Authentication authentication, @RequestParam(value="studentId", required=false) Long studentId){
+        // my profile
+        User user;
+        Student student;
+        if (studentId == null) {
+            user = userService.getUserByUsername(authentication.getName());
+            student = studentService.findStudentByUser(user);
+        }
 
-        User user = userService.getUserByUsername(authentication.getName());
-        Student student = studentService.findStudentByUser(user);
-
+        // see other student's profile
+        else {
+            student = studentService.findById(studentId);
+            if (student == null) {
+                throw new RuntimeException("STUDENT_NOT_FOUND");
+            }
+    
+            user = student.getUser();
+        }
+ 
         String username = user.getUsername();
         String email = user.getEmail();
         String role = user.getRole().getValue();

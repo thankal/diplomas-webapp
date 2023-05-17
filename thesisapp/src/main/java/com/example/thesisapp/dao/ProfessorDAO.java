@@ -15,4 +15,6 @@ public interface ProfessorDAO extends JpaRepository<Professor, Long>{
 
     Optional<Professor> findByUser(User user);
 
+    Optional<Professor> findById(Long id);
+
 }

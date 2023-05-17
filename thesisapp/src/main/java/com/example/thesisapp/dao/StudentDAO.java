@@ -11,8 +11,10 @@ import com.example.thesisapp.model.User;
 public interface StudentDAO extends JpaRepository<Student, Long> {
 	
     List<Student> findAll();
+
     Optional<Student> findByUser(User user);
-	// Optional<Student> findByUserId(String userId);
+
+    Optional<Student> findById(Long id);
 
 }
 

@@ -40,8 +40,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Override
 	@Transactional
-	public void cancelAllAplications() {
-		applicationDao.deleteAll();
+	public void cancelApplicationsForThesis(Long thesisId) {
+		applicationDao.deleteByThesisId(thesisId);
+	}
+
+	@Override
+	@Transactional
+	public void cancelApplicationsByStudent(Long studentId) {
+		applicationDao.deleteByStudentId(studentId);
 	}
 
 	@Override

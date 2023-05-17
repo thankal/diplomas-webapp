@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.thesisapp.model.Professor;
 import com.example.thesisapp.model.User;
@@ -19,16 +20,33 @@ public class ProfessorController {
     @Autowired
     ProfessorService professorService;
 
-    @RequestMapping("/professor/profile")
-    public String getAdminHome(Model model, Authentication authentication){
-        User user = userService.getUserByUsername(authentication.getName());
-        Professor prof = professorService.findProfessorByUser(user);
 
+    @RequestMapping("/professor/profile")
+    public String getUserHome(Model model, Authentication authentication, @RequestParam(value="professorId", required=false) Long professorId){
+        // my profile
+        User user;
+        Professor professor;
+        if (professorId == null) {
+            user = userService.getUserByUsername(authentication.getName());
+            professor = professorService.findProfessorByUser(user);
+        }
+
+        // see other professor's profile
+        else {
+            professor = professorService.findById(professorId);
+            if (professor == null) {
+                throw new RuntimeException("PROFESSOR_NOT_FOUND");
+            }
+    
+            user = professor.getUser();
+        }
+ 
         String username = user.getUsername();
         String email = user.getEmail();
         String role = user.getRole().getValue();
-        String fullName = prof.getFirstName() + " " + prof.getLastName();
-        String speciality = prof.getSpeciality();
+        String fullName = professor.getFirstName() + " " + professor.getLastName();
+        String speciality = professor.getSpeciality();
+
 
         model.addAttribute("username", username);
         model.addAttribute("email", email);

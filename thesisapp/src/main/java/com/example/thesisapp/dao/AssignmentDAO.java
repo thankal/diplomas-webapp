@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.Student;
+import com.example.thesisapp.model.Thesis;
 
 
 public interface AssignmentDAO extends JpaRepository<Assignment, Long>{
@@ -22,6 +24,13 @@ public interface AssignmentDAO extends JpaRepository<Assignment, Long>{
     Optional<Assignment> findByStudentId(Long studentId);
 
     Optional<Assignment> findByThesisId(Long studentId);
+
+    @Query("SELECT DISTINCT app.thesis.id FROM Assignment app")
+    List<Long> findAllUniqueThesisIds();
+
+    @Query("SELECT DISTINCT app.thesis.id FROM Assignment app WHERE app.student.id = :studentId")
+    Optional<Long> findAllUniqueThesisIdByStudent(Long studentId);
+
 
 
 

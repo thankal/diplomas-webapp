@@ -14,7 +14,9 @@ public interface ApplicationService {
 
 	public void cancelApplication(Long applicationId);
 
-	public void cancelAllAplications();
+	public void cancelApplicationsForThesis(Long thesisId);
+
+	public void cancelApplicationsByStudent(Long studentId);
 
     public boolean applicationExists(Long sudentId, Long thesisId);
 
