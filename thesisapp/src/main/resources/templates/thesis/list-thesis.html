@@ -91,7 +91,9 @@
 									Apply
 								</a>
 
-								<p th:if="${myAssignedThesisId == tempThesis.id}">You have been assigned to this thesis!</p>
+								<p class="text-success" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId == tempThesis.id}">You have been assigned to this thesis!</p>
+								<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId!=null && myAssignedThesisId != tempThesis.id && !assignedThesisIds.contains(tempThesis.id)}">Cannot apply</p>
+								<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${assignedThesisIds.contains(tempThesis.id) && myAssignedThesisId != tempThesis.id}">Thesis is closed.</p>
 								
 							</td>
 							
