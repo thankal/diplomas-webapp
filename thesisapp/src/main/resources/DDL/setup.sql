@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS public.assignments
     CONSTRAINT assignments_thesis_fk_fkey FOREIGN KEY (thesis_fk)
         REFERENCES public.thesis (thesis_id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO CASCADE
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;
