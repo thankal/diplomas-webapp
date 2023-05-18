@@ -49,7 +49,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		return Optional.empty();
 
-
 	}
 
 	@Override
@@ -72,5 +71,10 @@ public class AssignmentServiceImpl implements AssignmentService {
 	@Override
 	public Optional<Long> getThesisIdByStudent(Long studentId) {
 		return assignmentDao.findAllUniqueThesisIdByStudent(studentId);
+	}
+
+	@Override
+	public Optional<Assignment> getAssignmentByThesisId(Long thesisId) {
+		return assignmentDao.findByThesisId(thesisId);
 	}
 }

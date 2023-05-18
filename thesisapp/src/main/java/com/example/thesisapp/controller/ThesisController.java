@@ -19,16 +19,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.thesisapp.model.Application;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.BestAverageSelectionStrategy;
+import com.example.thesisapp.model.Evaluation;
+import com.example.thesisapp.model.EvaluationFormula;
 import com.example.thesisapp.model.FewestCoursesSelectionStrategy;
 import com.example.thesisapp.model.Professor;
 import com.example.thesisapp.model.RandomSelectionStrategy;
 import com.example.thesisapp.model.SelectionStrategy;
+import com.example.thesisapp.model.StandardEvaluationFormula;
 import com.example.thesisapp.model.Student;
 import com.example.thesisapp.model.Thesis;
 import com.example.thesisapp.model.ThresholdSelectionStrategy;
 import com.example.thesisapp.model.User;
 import com.example.thesisapp.service.ApplicationService;
 import com.example.thesisapp.service.AssignmentService;
+import com.example.thesisapp.service.EvaluationService;
 import com.example.thesisapp.service.ProfessorService;
 import com.example.thesisapp.service.StudentService;
 import com.example.thesisapp.service.ThesisService;
@@ -55,6 +59,9 @@ public class ThesisController {
 
     @Autowired
     private AssignmentService assignmentService;
+
+	@Autowired
+    private EvaluationService evaluationService;
 	
 	@Autowired
 	public ThesisController(ThesisService theThesisService) {
@@ -132,6 +139,17 @@ public class ThesisController {
 		if (currentUser.getRole().getValue().equals("Professor")) {
 			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 			theModel.addAttribute("currentProfessor", currentProfessor);
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			theModel.addAttribute("evaluation", evaluation);
+
+		}
+		else if (currentUser.getRole().getValue().equals("Student")){
+			Student student = studentService.findStudentByUser(currentUser);
+			Long myAssignedThesisId = assignmentService.getThesisIdByStudent(student.getId()).orElse(null);
+			theModel.addAttribute("myAssignedThesisId", myAssignedThesisId);
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			theModel.addAttribute("evaluation", evaluation);
+
 		}
 	
 		
@@ -212,6 +230,10 @@ public class ThesisController {
 			strategy = new FewestCoursesSelectionStrategy();
 		}
 		else if (strategyOption.equals("threshold")) {
+			if (th1 == null || th2 == null) {
+				// throw error
+				return "redirect:/thesis/list";
+			}
 			strategy = new ThresholdSelectionStrategy(th1, th2);
 		}
 		else {
@@ -264,6 +286,123 @@ public class ThesisController {
 		
         // redirect back to the assignment page
 		return "redirect:/thesis/assign?thesisId=" + thesisId;
+	}
+
+	@RequestMapping("/evaluate")
+	public String evaluateThesis(Model model, @RequestParam("thesisId") long thesisId){
+									
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+
+		Professor currentProfessor;
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			currentProfessor = professorService.findProfessorByUser(currentUser);
+			model.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+		
+		// get the selected thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// add to the spring model
+		model.addAttribute("thesis", theThesis);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == theThesis.getProfessor()) {
+
+			// get the assigned student if there is one
+			Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElseThrow(
+				()-> new RuntimeException("ASSIGNMENT_NOT_FOUND")
+			);
+			model.addAttribute("studentAssigned", studentAssigned);
+
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			model.addAttribute("evaluation", evaluation);
+
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+
+
+		
+		return "thesis/evaluate-thesis";
+	}
+
+	// User selects a strategy and confirms the assignment
+	@PostMapping("/evaluate")
+	public String saveEvaluationThesis(Model theModel, @RequestParam("thesisId") long thesisId,
+															@RequestParam("formula") String formulaOption,
+															@RequestParam(value="implementation") double implementationGrade,
+															@RequestParam(value="report") double reportGrade,
+															@RequestParam(value="presentation") double presentationGrade){
+									
+		// useful for getting the current user for the rest 
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		String currentUid = userDetails.getUsername();
+		User currentUser = userService.getUserByUsername(currentUid);
+
+		Professor currentProfessor;
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			currentProfessor = professorService.findProfessorByUser(currentUser);
+			theModel.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+
+
+
+		// get the current thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == theThesis.getProfessor()) {
+			EvaluationFormula formula;
+			if (formulaOption.equals("standard")) {
+				formula = new StandardEvaluationFormula();
+			}
+
+			else {
+				// throw error
+				return "redirect:/thesis/list";
+			}
+			
+			double totalGrade;
+			totalGrade = formula.calculateTotalGrade(implementationGrade, reportGrade, presentationGrade);
+			System.out.println(totalGrade);
+
+			Assignment theAssignment = assignmentService.getAssignmentByThesisId(thesisId).orElseThrow(
+				()-> new RuntimeException("ASSIGNMENT_NOT_FOUND")
+			);
+
+			// ..and then save the evaluation
+			Evaluation theEvaluation = new Evaluation();
+			theEvaluation.setAssignment(theAssignment);
+			theEvaluation.setImplementation(implementationGrade);
+			theEvaluation.setReport(reportGrade);
+			theEvaluation.setPresentation(presentationGrade);
+			theEvaluation.setTotal(totalGrade);
+			evaluationService.save(theEvaluation);
+
+		}
+		else {
+			// not allowed TODO: maybe throw a forbidden message?
+			return "redirect:/thesis/list";
+		}
+
+		
+        // redirect back to the assignment page
+		return "redirect:/thesis/evaluate?thesisId=" + thesisId;
 	}
 
 	@RequestMapping("/cancelAssignment")
