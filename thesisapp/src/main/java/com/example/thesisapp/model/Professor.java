@@ -1,5 +1,6 @@
 package com.example.thesisapp.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,7 +29,7 @@ public class Professor{
 	@Column(name="speciality")
 	private String speciality;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_fk", referencedColumnName = "user_id")
 	private User user;
 
