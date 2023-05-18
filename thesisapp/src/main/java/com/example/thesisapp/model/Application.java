@@ -1,5 +1,6 @@
 package com.example.thesisapp.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,11 +20,11 @@ public class Application{
 	@Column(name="application_id")
 	private Long id;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "student_fk", referencedColumnName = "student_id")
 	private Student student;
     
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "thesis_fk", referencedColumnName = "thesis_id")
 	private Thesis thesis;
 
