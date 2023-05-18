@@ -21,6 +21,10 @@ public interface ApplicationDAO extends JpaRepository<Application, Long>{
 
     void deleteByStudentIdAndThesisId(Long studentId, Long thesisId);
 
+    void deleteByStudentId(Long studentId);
+
+    void deleteByThesisId(Long thesisId);
+
     void deleteById(Long applicationId);
 
     void deleteAll();

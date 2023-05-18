@@ -27,4 +27,11 @@ public class StudentServiceImpl implements StudentService {
 			);
 	}
 
+	@Override
+	public Student findById(Long id) {
+		return studentDAO.findById(id).orElseThrow(
+				()-> new RuntimeException("STUDENT_NOT_FOUND")
+			);
+	}
+
 }

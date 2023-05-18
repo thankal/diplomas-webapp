@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+
+	<style>
+		.container-fluid {
+			height: 100vh;
+		}
+		
+		.card-body {
+			overflow: auto;
+			max-height: 80vh;
+		}
+	</style>
+
+	<title>Assignment Evaluation</title>
+</head>
+
+
+<body>
+	<div class="container">
+	
+		<h3>Evaluate Assignment</h3>
+		<hr>
+		
+		<p class="h4 mb-4">Evaluate the student's work</p>
+	
+		<form th:object="${thesis}" method="POST">
+		
+          <div class="form-group row">
+            <label for="title" class="col-md-4 col-form-label text-md-right">Diploma Thesis Subject Title:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext font-weight-bold" th:text="${thesis.title}"></p>
+            </div>
+          </div>
+
+			<!-- show the selected student -->
+			<div sec:authorize="hasAuthority('PROFESSOR')" th:if="${studentAssigned!=null && currentProfessor.id == thesis.professor.id}" >
+				<p class="col-form-label text-center text-bold">Assigned student:</p>
+				<div class="col-md-12">
+					<table class="table table-hover caption-top table-sm">
+						<thead class="thead-dark">
+							<tr>
+								<th class="col-3">First Name</th>
+								<th class="col-3">Last Name</th>
+								<th class="col-3">Email</th>
+								<th class="col-1">Years of Study</th>
+								<th class="col-1">Courses Remaining</th>
+								<th class="col-1">Average Grade</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr>
+								<td th:text="${studentAssigned.firstName}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.lastName}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.user.email}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.yearOfStudies}" class="col-3 table-link"/>	
+								<td th:text="${studentAssigned.remainingCourses}" class="col-1 table-link"/>	
+								<td th:text="${studentAssigned.averageGrade}" class="col-1 table-link"/>	
+								</td>
+							</tr>
+						</tbody>		
+					</table>
+				</div>
+			</div>
+
+		</form>
+		<div th:if="${evaluation==null}">
+			<form method="POST">
+				<div th:if="${studentAssigned!=null && currentProfessor.id == thesis.professor.id}" class="form-row">
+					<div class="col form-group">
+					<label>Evaluation formula:</label>
+					<select name="formula" class="custom-select" required>
+						<option value="disabled" disabled >Choose an Evaluation Formula</option>
+						<option value="standard">0.7*implementation+0.15*report+0.15*presentation</option>
+					</select>
+					</div> 
+				</div> 
+	
+				<div class="grade-fields">
+					<div class="form-row">
+						<div class="col-md-4 form-group">
+						<label>Implementation grade</label>
+						<input type="numeric" name="implementation" class="form-control" placeholder="" required>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-4 form-group">
+						<label>Report grade</label>
+						<input type="numeric" name="report" class="form-control" placeholder="" required>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-4 form-group">
+						<label>Presentation grade</label>
+						<input type="numeric" name="presentation" class="form-control" placeholder="" required>
+						</div>
+					</div>
+	
+				</div>
+				
+				<button th:if="${studentAssigned!=null && currentProfessor.id == thesis.professor.id}" sec:authorize="hasAuthority('PROFESSOR')" 
+				type="submit"
+				class="btn btn-success" 
+				onclick="if (!(confirm('Are you sure you want to permanently confirm the evaluation of this assignment?'))) return false">
+					Evaluate
+				</button>
+			</form>
+		</div>
+
+		<div th:if="${evaluation!=null}">
+			<hr>
+			<table class="table table-hover caption-top table-sm">
+				<thead class="">
+					<tr>
+						<th class="col-3">Assignment Phase</th>
+						<th class="col-3">Grade</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr>
+						<td class="col-3">Implementation</td>
+						<td th:text="${evaluation.implementation}" class="col-3"/></td>
+					</tr>
+					<tr>
+						<td class="col-3">Report</td>
+						<td th:text="${evaluation.report}" class="col-3"/></td>
+					</tr>
+					<tr>
+						<td class="col-3">Presentation</td>
+						<td th:text="${evaluation.presentation}" class="col-3"/></td>
+					</tr>
+					<tr>
+						<td class="col-3">Total</td>
+						<td th:text="${evaluation.total}" class="col-3"/></td>
+					</tr>
+				</tbody>		
+			</table>
+
+		</div>
+			
+		
+		<hr>
+
+		<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
+		
+	</div>
+  
+  
+</body>
+</html>

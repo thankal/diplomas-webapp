@@ -27,10 +27,14 @@
 
 
 <body>
-	<div class="container">
-	
-		<h3>Thesis Assign</h3>
-		<hr>
+	<div class="container-fluid h-100">
+	<div class="row h-100 justify-content-center mt-3">
+	<div class="col-md-8">
+	<div class="card">
+	<div class="card-header">
+		<h4>Thesis Assign</h4>
+	</div>
+	<div class="card-body">
 		
 		<p class="h4 mb-4">Assign Thesis to Student</p>
 	
@@ -58,7 +62,7 @@
 
 
 			<!-- show the selected student -->
-			<div th:if="${studentAssigned}">
+			<div sec:authorize="hasAuthority('PROFESSOR')" th:if="${studentAssigned!=null && numOfApplications==0 && currentProfessor.id == thesis.professor.id}" >
 				<p class="col-form-label text-center">Assigned student:</p>
 				<div class="col-md-12">
 					<table class="table table-hover caption-top table-sm">
@@ -88,7 +92,7 @@
 				</div>
 			</div>
 
-			<div th:if="${studentAssigned!=null && numOfApplications>1}">
+			<div sec:authorize="hasAuthority('PROFESSOR')" th:if="${studentAssigned==null && numOfApplications>0 && currentProfessor.id == thesis.professor.id}">
 				<p class="col-form-label text-center">List of Applicants:</p>
 				<div class="col-md-12">
 					<table class="table table-hover caption-top table-sm">
@@ -119,7 +123,7 @@
             </div>
 
 
-			<div th:unless="${studentAssigned}" class="form-row">
+			<div th:if="${studentAssigned==null && numOfApplications>0 && currentProfessor.id == thesis.professor.id}" class="form-row">
 				<div class="col form-group">
 				<label>Selection strategy:</label>
 				<select name="strategy" class="custom-select" required>
@@ -136,7 +140,7 @@
 				<div class="form-row">
 					<div class="col-md-12 form-group">
 					<label>Average Courses Grade Threshold:</label>
-					<input type="numeric" name"th1" class="form-control" placeholder="" required>
+					<input type="numeric" name="th1" class="form-control" placeholder="" required>
 					</div>
 				</div>
 				<div class="form-row">
@@ -150,8 +154,8 @@
 			
 			
 			
-			<button th:unless="${studentAssigned}" type="submit" class="btn btn-info col-2">Assign</button>
-			<a th:if="${studentAssigned}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/cancelAssignment(thesisId=${thesis.id})}"
+			<button th:if="${studentAssigned==null && numOfApplications>0 && currentProfessor.id == thesis.professor.id}" type="submit" class="btn btn-info col-2">Assign</button>
+			<a th:if="${studentAssigned!=null && numOfApplications==0 && currentProfessor.id == thesis.professor.id}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/cancelAssignment(thesisId=${thesis.id})}"
 			class="btn btn-warning btn-sm" 
 			onclick="if (!(confirm('Are you sure you want to cancel the assigned student from this thesis?'))) return false">
 				Cancel Assignment
@@ -159,10 +163,15 @@
 			
 		</form>
 		
-		<hr>
-
-		<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
 		
+	</div>
+</div>
+<div class="text-md-right mt-2">
+	<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
+	<a th:if="${currentProfessor.id == thesis.professor.id}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/evaluate(thesisId=${thesis.id})}" class="btn btn-success btn-sm mb-3">To Evaluation Page</a>
+</div>
+	</div>
+	</div>
 	</div>
   
   

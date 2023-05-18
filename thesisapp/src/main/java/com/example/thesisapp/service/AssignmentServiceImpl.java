@@ -1,6 +1,7 @@
 package com.example.thesisapp.service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.thesisapp.dao.AssignmentDAO;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.Student;
+import com.example.thesisapp.model.Thesis;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
@@ -47,7 +49,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 		return Optional.empty();
 
-
 	}
 
 	@Override
@@ -60,5 +61,20 @@ public class AssignmentServiceImpl implements AssignmentService {
 	public boolean assignmentExists(Long thesisId) {
 		Optional<Assignment> storedAssignment = assignmentDao.findByThesisId(thesisId);
 		return storedAssignment.isPresent();
+	}
+
+	@Override
+	public List<Long> getThesisIds() {
+		return assignmentDao.findAllUniqueThesisIds();
+	}
+
+	@Override
+	public Optional<Long> getThesisIdByStudent(Long studentId) {
+		return assignmentDao.findAllUniqueThesisIdByStudent(studentId);
+	}
+
+	@Override
+	public Optional<Assignment> getAssignmentByThesisId(Long thesisId) {
+		return assignmentDao.findByThesisId(thesisId);
 	}
 }

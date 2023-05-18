@@ -27,4 +27,11 @@ public class ProfessorServiceImpl implements ProfessorService {
 			);
 	}
 
+	@Override
+	public Professor findById(Long id) {
+		return professorDAO.findById(id).orElseThrow(
+				()-> new RuntimeException("PROFESSOR_NOT_FOUND")
+			);
+	}
+
 }

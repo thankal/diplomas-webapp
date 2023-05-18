@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.thesisapp.model.Application;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.Student;
 
@@ -20,9 +19,16 @@ public interface AssignmentService {
 
     public Optional<Student> getStudentAssigned(Long thesisId);
 
+    public List<Long> getThesisIds();
+
+    public Optional<Long> getThesisIdByStudent(Long studentId);
+
+    public Optional<Assignment> getAssignmentByThesisId(Long thesisId);
+
     public boolean assignmentExists(Long sudentId, Long thesisId);
 
     public boolean assignmentExists(Long thesisId);
+
 
     
 }
