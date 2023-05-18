@@ -29,6 +29,9 @@ public class EvaluationServiceImpl implements EvaluationService {
 	@Override
 	public Optional<Evaluation> getEvaluationForThesis(Long thesisId) {
 		Assignment assignment = assignmentService.getAssignmentByThesisId(thesisId).orElse(null);
+		if (assignment == null) {
+			return Optional.empty();
+		}
 		return evaluationDao.findByAssignmentId(assignment.getId());
 		
 	}
