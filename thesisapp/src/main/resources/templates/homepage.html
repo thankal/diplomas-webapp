@@ -10,86 +10,85 @@
     <!--<link rel="stylesheet" th:href="@{/css/navbar.css}">-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- <link rel="stylesheet" type="text/css" th:href="@{/css/navbar.css}" defer> -->
-    
-	<title>Thesis App</title>
 
-  <style>
+    <title>Thesis App</title>
 
-    .footer {
-      position: fixed;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      background-color: #f5f5f5;
-      text-align: center;
-      padding: 10px;
-    }
-
-    
-  </style>
+    <style>
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
 </head>
 
 <body>
-  <div th:replace="navbar :: navbar"> </div>
-  <div class="container">
-    <div class="jumbotron">
+    <div th:replace="navbar :: navbar"></div>
+    <div class="container">
+        <div class="jumbotron">
 
-      <div sec:authorize="hasRole('ROLE_ANONYMOUS')">
-        <h1>Welcome!</h1>
-        <p>To use this website please log in to your account or if you are new here take your time to create your profile!</p>
-        <hr>
-        <p>
-          <a th:href="@{/login}" class="btn btn-success btn-lg mb-3"><i class="fas fa-sign-in-alt"></i> Login</a>
-          <a th:href="@{/register}" class="btn btn-primary btn-lg mb-3"><i class="fas fa-user-circle"></i> Register</a>
-        </p>
-      </div>
+            <div sec:authorize="hasRole('ROLE_ANONYMOUS')">
+                <h1>Welcome!</h1>
+                <p>To use this website, please log in to your account or, if you are new here, take your time to create your profile!</p>
+                <hr>
+                <p>
+                    <a th:href="@{/login}" class="btn btn-success btn-lg mb-3" style="background-color: #000000; color: #fc8a09; border: #000000; border-radius: 100px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a th:href="@{/register}" class="btn btn-primary btn-lg mb-3" style="background-color: #fc8a09; color: #000000; border: #000000; border-radius: 100px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-user-circle"></i> Register</a>
+                </p>
+            </div>
 
-      <div sec:authorize="isAuthenticated()">
-          <h1>Welcome <span sec:authentication="name"></span>!</h1>
-          <h4>Role: <span sec:authentication="authorities"></span></h4>
-          <hr>
-          <div sec:authorize="hasAuthority('STUDENT')" class="btn-group">
-          <p>
-            <a th:href="@{/thesis/list}" class="btn btn-primary btn-lg"><i class="fas fa-list"></i> View Diploma Thesis Subjects</a>
-            <a th:href="@{/student/profile}" class="btn btn-success btn-lg"><i class="fas fa-user"></i> My Profile</a>
-            <a th:href="@{/logout}" class="btn btn-danger btn-lg"><i class="fas fa-sign-out-alt"></i> Logout</a>
-          </p>
-          </div>
+            <div sec:authorize="isAuthenticated()">
+                <h1>Welcome <span sec:authentication="name"></span>!</h1>
+                <h4>Role: <span sec:authentication="authorities"></span></h4>
+                <hr>
+                <div sec:authorize="hasAuthority('STUDENT')" class="btn-group">
+                    <p>
+                        <a th:href="@{/thesis/list}" class="btn btn-primary btn-lg" style="background-color: #007bff; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-list"></i> View Diploma Thesis Subjects</a>
+                        <a th:href="@{/student/profile}" class="btn btn-success btn-lg" style="background-color: #28a745; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-user"></i> My Profile</a>
+                        <a th:href="@{/logout}" class="btn btn-danger btn-lg" style="background-color: #dc3545; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </p>
+                </div>
 
-          <div sec:authorize="hasAuthority('PROFESSOR')" class="btn-group">
-          <p>
-            <a th:href="@{/thesis/list}" class="btn btn-primary btn-lg"><i class="fas fa-list"></i> View Diploma Thesis Subjects</a>
-            <a th:href="@{/professor/profile}" class="btn btn-success btn-lg"><i class="fas fa-user"></i> My Profile</a>
-            <a th:href="@{/logout}" class="btn btn-danger btn-lg"><i class="fas fa-sign-out-alt"></i> Logout</a>
-          </div>
-          </p>
+                <div sec:authorize="hasAuthority('PROFESSOR')" class="btn-group">
+                    <p>
+                        <a th:href="@{/thesis/list}" class="btn btn-primary btn-lg" style="background-color: #007bff; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-list"></i> View Diploma Thesis Subjects</a>
+                        <a th:href="@{/professor/profile}" class="btn btn-success btn-lg" style="background-color: #28a745; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-user"></i> My Profile</a>
+                        <a th:href="@{/logout}" class="btn btn-danger btn-lg" style="background-color: #dc3545; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; font-size: 18px; text-decoration: none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </p>
+                </div>
+            </div>
+
         </div>
-      </div>
-
     </div>
-</div>
-<footer class="bg-light py-3 footer">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-9">
-        <h5>About Us</h5>
-        <p>Thanks for visiting our platform for diploma theses! This website links professors and students, offering an easy and practical way for professors to share their thesis topics and for students to apply to them. You can find motivated students to work on your thesis projects by simply posting your thesis topics online as a professor. Additionally, as a student, you can look through the available subjects, apply to the ones that interest you, and begin working on your diploma thesis. We sincerely hope you benefit from this resource and use it to fulfill your academic objectives!</p>
-      </div>
-      <div class="col-md-3">
-        <h5>Development team</h5>
-        <ul class="list-unstyled">
-          <li>Vasileios Valsamidis</li>
-          <li>Dimitris Giannitsakis</li>
-          <li>Andreas Birmpilis</li>
-          <li>Athanasios Kalyviotis</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</footer>
+    <footer class="bg-light py-3 footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <h5>About Us</h5>
+                    <p>Thanks for visiting our platform for diploma theses! This website links professors and students, offering an easy and practical way for professors to share their thesis topics and for students to apply to them. You can find motivated students to work on your thesis projects by simply posting your thesis topics online as a professor. Additionally, as a student, you can look through the available subjects, apply to the ones that interest you, and begin working on your diploma thesis. We sincerely hope you benefit from this resource and use it to fulfill your academic objectives!</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Development team</h5>
+                    <ul class="list-unstyled">
+                        <li>Vasileios Valsamidis</li>
+                        <li>Dimitris Giannitsakis</li>
+                        <li>Andreas Birmpilis</li>
+                        <li>Athanasios Kalyviotis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rZ8HD8pL3r+Ou5RS6zfaRn4yxLlHQVvQ8/6M+T9WA6/TjzpX4Vr" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-vB+ebzFZKGHRzszxMLv6n6mVr0Mjs/2DGiT2hVL2D9Usm2ZFP8HVsl5Ksf+Q6QmJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-oBuBUmTF/s9qE5t1B01qgWrn52IStPcyE8Fk+zZfa4W56bKqWC5u4jB/C2JC5oNM" crossorigin="anonymous"></script>
 </body>
-
 
 </html>
