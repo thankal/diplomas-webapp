@@ -91,21 +91,25 @@ ALTER TABLE IF EXISTS public.students
 
 -- Table: public.thesis
 
-DROP TABLE IF EXISTS public.thesis CASCADE;
+-- DROP TABLE IF EXISTS public.thesis;
 
 CREATE TABLE IF NOT EXISTS public.thesis
 (
     thesis_id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
     title character varying(500) COLLATE pg_catalog."default" NOT NULL,
-    objectives character varying(1000) COLLATE pg_catalog."default" NOT NULL,
+    objectives character varying(10000) COLLATE pg_catalog."default" NOT NULL,
     prof_fk bigint NOT NULL,
     CONSTRAINT thesis_pkey PRIMARY KEY (thesis_id),
     CONSTRAINT thesis_teacher_fk_fkey FOREIGN KEY (prof_fk)
         REFERENCES public.professors (prof_id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
-        NOT VALID
 )
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.thesis
+    OWNER to postgres;
 
 TABLESPACE pg_default;
 
