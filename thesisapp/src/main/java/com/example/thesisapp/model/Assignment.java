@@ -20,11 +20,11 @@ public class Assignment{
 	@Column(name="assignment_id")
 	private Long id;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "thesis_fk", referencedColumnName = "thesis_id")
 	private Thesis thesis;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "student_fk", referencedColumnName = "student_id")
 	private Student student;
 

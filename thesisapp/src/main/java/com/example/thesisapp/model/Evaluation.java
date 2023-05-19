@@ -20,7 +20,7 @@ public class Evaluation{
 	@Column(name="eval_id")
 	private Long id;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "assignment_fk", referencedColumnName = "assignment_id")
 	private Assignment assignment;
 

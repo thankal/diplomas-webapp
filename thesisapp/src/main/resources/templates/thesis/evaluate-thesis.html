@@ -26,7 +26,15 @@
 
 
 <body>
-	<div class="container">
+	<div class="container-fluid h-100">
+	<div class="row h-100 justify-content-center mt-3">
+    <div class="col-md-8">
+	<div class="card">
+        <div class="card-header">
+          <h4>Thesis Details</h4>
+        </div>
+        <div class="card-body">
+
 	
 		<h3>Evaluate Assignment</h3>
 		<hr>
@@ -151,9 +159,16 @@
 			
 		
 		<hr>
-
-		<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
 		
+	</div>
+</div>
+<div class="text-md-right mt-2">
+	<a th:href="@{/thesis/list}" class="btn btn-dark btn-sm mb-3">Back to Thesis List</a>
+	<a th:href="@{/thesis/detail(thesisId=${thesis.id})}" class="btn btn-secondary btn-sm mb-3">Back to Details</a>
+	<a th:href="@{/thesis/assign(thesisId=${thesis.id})}" class="btn btn-light btn-sm mb-3">Back to Assignment Page</a>
+</div>
+	</div>
+	</div>
 	</div>
   
   

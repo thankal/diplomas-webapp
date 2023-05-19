@@ -36,10 +36,10 @@
 		Add Thesis
 	</a>
 		
-	<div class="card" th:each="professor: ${professors}">
+	<div class="card mt-3" th:each="professor: ${professors}">
 	<div class="card-header">
-		<h5 class="mb-0">
-		<a th:text="${professor.firstName} + ' ' + ${professor.lastName}" th:href="@{/professor/profile(professorId=${professor.id})}" target="blank" class="btn btn-link"></a>
+		<h5 class="mb-0">By professor: 
+		<a th:text="${professor.firstName} + ' ' + ${professor.lastName}" th:href="@{/professor/profile(professorId=${professor.id})}" target="blank" class="text-bold text-dark" ></a>
 		</h5>
 	</div>
 	<div class="card-body">
@@ -83,7 +83,9 @@
 
 	
     <span th:utext="${applicationExists}"></span>
-	<a th:href="@{/}" class="btn btn-secondary btn-sm mb-3">Home</a>
+<div class="text-md-right mt-2">
+	<a th:href="@{/}" class="btn btn-secondary btn-md mb-3">Home</a>
+</div>
 </div>
 
 

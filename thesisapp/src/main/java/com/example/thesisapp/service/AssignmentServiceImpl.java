@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.example.thesisapp.dao.AssignmentDAO;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.Student;
-import com.example.thesisapp.model.Thesis;
 
 @Service
 public class AssignmentServiceImpl implements AssignmentService {
