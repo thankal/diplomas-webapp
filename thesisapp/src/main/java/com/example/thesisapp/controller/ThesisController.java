@@ -160,7 +160,6 @@ public class ThesisController {
 			model.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -203,7 +202,6 @@ public class ThesisController {
 			theModel.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -248,7 +246,6 @@ public class ThesisController {
 		if (currentProfessor == theThesis.getProfessor()) {
 
 			if(assignmentService.assignmentExists(thesisId, selectedStudent.getId())){
-				// System.out.println("Assignment for this thesis already exists!");
 				theModel.addAttribute("assignmentExists", "There is already an assignment for this thesis!");
 				// redirect back to the assignment page
 				return "redirect:/thesis/assign?thesisId=" + thesisId;
@@ -267,7 +264,6 @@ public class ThesisController {
 			applicationService.cancelApplicationsByStudent(selectedStudent.getId());
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -288,7 +284,6 @@ public class ThesisController {
 			model.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 		
@@ -312,7 +307,6 @@ public class ThesisController {
 
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -339,7 +333,6 @@ public class ThesisController {
 			theModel.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -362,7 +355,6 @@ public class ThesisController {
 			
 			double totalGrade;
 			totalGrade = formula.calculateTotalGrade(implementationGrade, reportGrade, presentationGrade);
-			System.out.println(totalGrade);
 
 			Assignment theAssignment = assignmentService.getAssignmentByThesisId(thesisId).orElseThrow(
 				()-> new RuntimeException("ASSIGNMENT_NOT_FOUND")
@@ -379,7 +371,6 @@ public class ThesisController {
 
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -441,7 +432,6 @@ public class ThesisController {
 		User currentUser = getCurrentUser();
 
 
-        // TODO: maybe add a check if the user is a professor
         Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 
         theThesis.setProfessor(currentProfessor);
@@ -473,7 +463,6 @@ public class ThesisController {
         Student student = studentService.findStudentByUser(currentUser);
 
 		if(applicationService.applicationExists(student.getId(), thesis.getId())){
-			System.out.println("Application already exists!");
             model.addAttribute("applicationExists", "You have already applied to this thesis!");
 			return "redirect:/thesis/list";
         }
