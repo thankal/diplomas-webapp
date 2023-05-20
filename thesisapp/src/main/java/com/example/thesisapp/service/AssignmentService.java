@@ -13,8 +13,6 @@ import com.example.thesisapp.model.Student;
 public interface AssignmentService {
 	public void save(Assignment assignment);
 
-	public void cancelAssignment(Long assignmentId);
-
 	public void cancelAssignmentByThesisId(Long thesisId);
 
     public Optional<Student> getStudentAssigned(Long thesisId);

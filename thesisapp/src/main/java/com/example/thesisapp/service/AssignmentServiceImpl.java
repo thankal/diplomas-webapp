@@ -28,12 +28,6 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 	@Override
 	@Transactional
-	public void cancelAssignment(Long assignmentId) {
-		assignmentDao.deleteById(assignmentId);
-	}
-
-	@Override
-	@Transactional
 	public void cancelAssignmentByThesisId(Long thesisId) {
 		assignmentDao.deleteByThesisId(thesisId);
 	}
