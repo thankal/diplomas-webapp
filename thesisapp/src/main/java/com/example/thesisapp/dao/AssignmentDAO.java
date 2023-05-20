@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.example.thesisapp.model.Assignment;
-import com.example.thesisapp.model.Student;
-import com.example.thesisapp.model.Thesis;
 
 
 public interface AssignmentDAO extends JpaRepository<Assignment, Long>{
@@ -16,8 +14,6 @@ public interface AssignmentDAO extends JpaRepository<Assignment, Long>{
 	Optional<Assignment> findByThesisIdAndStudentId(Long thesisId, Long studentId);
 
     void deleteByStudentIdAndThesisId(Long studentId, Long thesisId);
-
-    void deleteById(Long assignmentId);
 
     void deleteByThesisId(Long thesisId);
 

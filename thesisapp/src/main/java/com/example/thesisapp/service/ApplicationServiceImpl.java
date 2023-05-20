@@ -21,6 +21,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	private ApplicationDAO applicationDao;
 
+	@Autowired
+	public ApplicationServiceImpl(ApplicationDAO theApplicationDao) {
+		applicationDao = theApplicationDao;
+	}
+
+	public ApplicationServiceImpl() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void saveApplication(Application application) {
 		applicationDao.save(application);
