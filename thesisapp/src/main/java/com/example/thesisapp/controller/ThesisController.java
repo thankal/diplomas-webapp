@@ -66,15 +66,15 @@ public class ThesisController {
 		thesisService = theThesisService;
 	}
 	
+	private User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return (User) authentication.getPrincipal();
+	}
 
 	@RequestMapping("/list")
 	public String listThesis(Model theModel) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-		
+		User currentUser = getCurrentUser();
+
 		// get all available thesis from db
 		List<Thesis> thesisList = thesisService.findAll();
 
@@ -112,13 +112,9 @@ public class ThesisController {
 	
 	@RequestMapping("/detail")
 	public String detailThesis(Model theModel, @RequestParam("thesisId") long thesisId){
-									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-		
+
+		User currentUser = getCurrentUser();
+	
 		// get the selected thesis from db
 		Thesis theThesis = thesisService.findById(thesisId);
 
@@ -157,11 +153,7 @@ public class ThesisController {
 	@RequestMapping("/assign")
 	public String assignThesis(Model model, @RequestParam("thesisId") long thesisId){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+		User currentUser = getCurrentUser();
 
 		if (currentUser.getRole().getValue().equals("Professor")) {
 			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
@@ -201,11 +193,9 @@ public class ThesisController {
 															@RequestParam(value="th1", required=false) Double th1,
 															@RequestParam(value="th2", required=false) Integer th2){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
+
 
 		Professor currentProfessor;
 		if (currentUser.getRole().getValue().equals("Professor")) {
@@ -289,11 +279,8 @@ public class ThesisController {
 	@RequestMapping("/evaluate")
 	public String evaluateThesis(Model model, @RequestParam("thesisId") long thesisId){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
 
 		Professor currentProfessor;
 		if (currentUser.getRole().getValue().equals("Professor")) {
@@ -342,11 +329,9 @@ public class ThesisController {
 															@RequestParam(value="report") double reportGrade,
 															@RequestParam(value="presentation") double presentationGrade){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
+
 
 		Professor currentProfessor;
 		if (currentUser.getRole().getValue().equals("Professor")) {
@@ -405,23 +390,21 @@ public class ThesisController {
 
 	@RequestMapping("/cancelAssignment")
 	public String cancelAssignmentThesis(Model theModel, @RequestParam("thesisId") long thesisId){
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-        Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 
-        Thesis thesis = thesisService.findById(thesisId);
+		User currentUser = getCurrentUser();
 
-		// make sure the proffesor is the one that created the thesis
-		if (currentProfessor == thesis.getProfessor()) {
-			// cancel existing assignment
-			if (assignmentService.assignmentExists(thesisId)) {
-				assignmentService.cancelAssignmentByThesisId(thesisId);
+		Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+
+			Thesis thesis = thesisService.findById(thesisId);
+
+			// make sure the proffesor is the one that created the thesis
+			if (currentProfessor == thesis.getProfessor()) {
+				// cancel existing assignment
+				if (assignmentService.assignmentExists(thesisId)) {
+					assignmentService.cancelAssignmentByThesisId(thesisId);
+				}
 			}
-		}
-		
+			
 		return "redirect:/thesis/assign?thesisId=" + thesisId;
 	}
 	
@@ -455,11 +438,8 @@ public class ThesisController {
 	@RequestMapping("/save")
 	public String saveThesis(@ModelAttribute("thesis") Thesis theThesis){
 
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+		User currentUser = getCurrentUser();
+
 
         // TODO: maybe add a check if the user is a professor
         Professor currentProfessor = professorService.findProfessorByUser(currentUser);
@@ -484,11 +464,8 @@ public class ThesisController {
 
 	@RequestMapping("/apply")
 	public String apply(@RequestParam("thesisId") int theId, Model model) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
 
 		
 		// apply to the thesis
@@ -512,11 +489,8 @@ public class ThesisController {
 	
 	@RequestMapping("/cancel")
 	public String cancelApplication(@RequestParam("thesisId") int theId, Model model) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
 
 		
 		// cancel application to the thesis
