@@ -5,17 +5,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.thesisapp.model.Application;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.Student;
-import com.example.thesisapp.model.Thesis;
 
 
 @Service
 public interface AssignmentService {
 	public void save(Assignment assignment);
-
-	public void cancelAssignment(Long assignmentId);
 
 	public void cancelAssignmentByThesisId(Long thesisId);
 
@@ -25,9 +21,12 @@ public interface AssignmentService {
 
     public Optional<Long> getThesisIdByStudent(Long studentId);
 
+    public Optional<Assignment> getAssignmentByThesisId(Long thesisId);
+
     public boolean assignmentExists(Long sudentId, Long thesisId);
 
     public boolean assignmentExists(Long thesisId);
+
 
     
 }

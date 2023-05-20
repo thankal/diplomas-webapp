@@ -27,10 +27,16 @@
 
 
 <body>
-	<div class="container">
-	
-		<h3>Thesis Assign</h3>
-		<hr>
+	<div th:replace="navbar :: header"></div>
+
+	<div class="container-fluid h-100">
+	<div class="row h-100 justify-content-center mt-3">
+	<div class="col-md-8">
+	<div class="card">
+	<div class="card-header">
+		<h4>Thesis Assign</h4>
+	</div>
+	<div class="card-body">
 		
 		<p class="h4 mb-4">Assign Thesis to Student</p>
 	
@@ -136,7 +142,7 @@
 				<div class="form-row">
 					<div class="col-md-12 form-group">
 					<label>Average Courses Grade Threshold:</label>
-					<input type="numeric" name"th1" class="form-control" placeholder="" required>
+					<input type="numeric" name="th1" class="form-control" placeholder="" required>
 					</div>
 				</div>
 				<div class="form-row">
@@ -159,10 +165,16 @@
 			
 		</form>
 		
-		<hr>
-
-		<a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
 		
+	</div>
+</div>
+<div class="text-md-right mt-2">
+	<a th:href="@{/thesis/list}" class="btn btn-dark btn-sm mb-3">Back to Thesis List</a>
+	<a th:href="@{/thesis/detail(thesisId=${thesis.id})}" class="btn btn-secondary btn-sm mb-3">Back to Details</a>
+	<a th:if="${studentAssigned!=null && currentProfessor.id == thesis.professor.id}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/evaluate(thesisId=${thesis.id})}" class="btn btn-success btn-sm mb-3">To Evaluation Page</a>
+</div>
+	</div>
+	</div>
 	</div>
   
   

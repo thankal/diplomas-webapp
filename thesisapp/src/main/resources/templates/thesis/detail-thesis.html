@@ -25,6 +25,8 @@
 
 
 <body>
+<div th:replace="navbar :: header"></div>
+
 <div class="container-fluid h-100">
   <div class="row h-100 justify-content-center mt-3">
     <div class="col-md-8">
@@ -42,7 +44,7 @@
           <div class="form-group row">
             <label for="title" class="col-md-4 col-form-label text-md-right">Professor:</label>
             <div class="col-md-6">
-              <p class="form-control-plaintext" th:text="${thesis.professor.firstName} + ' ' + ${thesis.professor.lastName} + ' (email:' + ${thesis.professor.user.email} + ')'"></p>
+              <a class="form-control-plaintext" th:href="@{/professor/profile(professorId=${thesis.professor.id})}" target="blank" th:text="${thesis.professor.firstName} + ' ' + ${thesis.professor.lastName}"></a>
             </div>
           </div>
           <div class="form-group row">
@@ -61,8 +63,46 @@
 			<div th:if="${numOfApplications==0 && studentAssigned==null}" class="col-md-12">
 				<p class="text-center form-control-plaintext">There are no applicants to this thesis subject yet! </p>
 			</div>
-			<div th:if="${numOfApplications==0 && studentAssigned!=null}" class="col-md-12">
+			<div th:if="${numOfApplications==0 && studentAssigned!=null && myAssignedThesisId != thesis.id}" class="col-md-12">
 				<p class="text-center form-control-plaintext">This thesis has been assigned to a student</p>
+			</div>
+			<div th:if="${evaluation != null}" class="col-md-12">
+				<p class="text-center form-control-plaintext">This thesis has been evaluated by the professor</p>
+			</div>
+
+			<div th:if="${numOfApplications==0 && studentAssigned!=null && myAssignedThesisId == thesis.id}" class="col-md-12">
+				<p class="text-center form-control-plaintext">You have been assigned to this thesis</p>
+			</div>
+
+			<div th:if="${evaluation!=null && studentAssigned!=null && (myAssignedThesisId == thesis.id || (currentProfessor!=null && thesis.professor.id == currentProfessor.id))}">
+				<hr>
+				<table class="table table-hover caption-top">
+					<thead class="">
+						<tr>
+							<th class="col-2">Assignment Phase</th>
+							<th class="col-2">Grade</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr>
+							<td class="col-2">Implementation</td>
+							<td th:text="${evaluation.implementation}" class="col-2"/></td>
+						</tr>
+						<tr>
+							<td class="col-2">Report</td>
+							<td th:text="${evaluation.report}" class="col-2"/></td>
+						</tr>
+						<tr>
+							<td class="col-2">Presentation</td>
+							<td th:text="${evaluation.presentation}" class="col-2"/></td>
+						</tr>
+						<tr>
+							<td class="col-2">Total</td>
+							<td th:text="${evaluation.total}" class="col-2"/></td>
+						</tr>
+					</tbody>		
+				</table>
 			</div>
 
 			<div sec:authorize="hasAuthority('PROFESSOR')" th:if="${studentAssigned==null && numOfApplications>0 && currentProfessor.id == thesis.professor.id}" class="form-group mt-5">
@@ -101,8 +141,8 @@
 	</div>
 	<div class="text-md-right mt-2">
 	  <!--<a th:href="@{/}" class="btn btn-success btn-sm mb-3">Home</a>-->
+	  <a th:href="@{/thesis/list}" class="btn btn-dark btn-sm mb-3">Back to Thesis List</a>
 	  <a th:if="${currentProfessor.id == thesis.professor.id}" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/assign(thesisId=${thesis.id})}" class="btn btn-success btn-sm mb-3">To Assignment Page</a>
-	  <a th:href="@{/thesis/list}" class="btn btn-primary btn-sm mb-3">Back to Thesis List</a>
 	</div>
     </div>
   </div>

@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
 import com.example.thesisapp.service.UserServiceImpl;
 
@@ -55,7 +54,7 @@ public class WebSecurityConfig {
 
                 http.authorizeRequests()
                 // URL matching for accessibility
-                .antMatchers("/", "/login", "/register", "/save").permitAll()
+                .antMatchers("/", "/login", "/register", "/save", "/about").permitAll()
                 .antMatchers("/css/**", "/js/**", "/images/**").permitAll()
                 .antMatchers("/admin/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/thesis/showFormForAdd/**").hasAnyAuthority("PROFESSOR") // ??? ZAS is this needed ??? - changed from account to user

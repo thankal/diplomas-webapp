@@ -24,6 +24,8 @@
 </head>
 
 <body>
+<div th:replace="navbar :: header"></div>
+
 
 <div class="container">
 
@@ -36,103 +38,59 @@
 		Add Thesis
 	</a>
 		
-	<div id="accordion">
-		<div class="card" th:each="professor: ${professors}">
-			<div class="card-header" th:id="'heading-' + ${professor.id}">
-			<h5 class="mb-0">
-				<button class="btn btn-link" th:text="${professor.firstName} + ' ' + ${professor.lastName}" data-toggle="collapse" th:attr="data-target='#collapse-'+${professor.id}, aria-controls='collapse-'+${professor.id}" aria-expanded="true" >
-					
-				</button>
-			</h5>
-			</div>
-			<div th:id="'collapse-' + ${professor.id}" class="collapse show" th:attr="aria-labelledby='heading-' + ${professor.id}" data-parent="#accordion">
-			<div class="card-body">
-				<table class="table table-bordered table-hover">
-					<thead class="thead-dark">
-						<tr>
-							<th class="col-9">Title</th>
-							<!-- <th>Description</th> -->
-							<th scope="col-3">Action</th>
-						</tr>
-					</thead>
-					
-					<tbody>
-
-						<tr th:each="tempThesis : ${thesis}" th:if="${tempThesis.professor.id == professor.id}" >
-							
-							<td  class="col-9 table-link">
-								<a style="color:black" th:text="${tempThesis.title}" th:href="@{/thesis/detail(thesisId=${tempThesis.id})}"> </a>
-							</td>
-							<!-- <td th:text="${tempThesis.objectives}" />	 -->
-							
-							<td>
-								<span sec:authorize="hasAuthority('PROFESSOR')" th:if="${tempThesis.professor.id == currentProfessor.id}">
-									<a sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/showFormForUpdate(thesisId=${tempThesis.id})}"
-									class="btn btn-info btn-sm">
-										Update
-									</a>
-									
-									<a sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/delete(thesisId=${tempThesis.id})}"
-									class="btn btn-danger btn-sm" 
-									onclick="if (!(confirm('Are you sure you want to delete this thesis?'))) return false">
-										Delete
-									</a>
-									
-								</span>
-								
-								<a th:if="${appliedThesisIds.contains(tempThesis.id)}" sec:authorize="hasAuthority('STUDENT')" th:href="@{/thesis/cancel(thesisId=${tempThesis.id})}"
-								class="btn btn-warning btn-sm" 
-								onclick="if (!(confirm('Are you sure you want to cancel your application to this thesis?'))) return false">
-									Cancel Application
-								</a>
-								<a th:unless="${appliedThesisIds.contains(tempThesis.id) || assignedThesisIds.contains(tempThesis.id) || myAssignedThesisId!=null}" sec:authorize="hasAuthority('STUDENT')" th:href="@{/thesis/apply(thesisId=${tempThesis.id})}"
-								class="btn btn-warning btn-sm" 
-								onclick="if (!(confirm('Are you sure you want to apply to this thesis?'))) return false">
-									Apply
-								</a>
-
-								<p class="text-success" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId == tempThesis.id}">You have been assigned to this thesis!</p>
-								<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId!=null && myAssignedThesisId != tempThesis.id && !assignedThesisIds.contains(tempThesis.id)}">Cannot apply</p>
-								<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${assignedThesisIds.contains(tempThesis.id) && myAssignedThesisId != tempThesis.id}">Thesis is closed.</p>
-								
-							</td>
-							
-							
-						</tr>
-					</tbody>		
-				</table>
-			</div>
-			</div>
+	<div class="card mt-3" th:each="professor: ${professors}">
+	<div class="card-header">
+		<h5 class="mb-0">By professor: 
+		<a th:text="${professor.firstName} + ' ' + ${professor.lastName}" th:href="@{/professor/profile(professorId=${professor.id})}" target="blank" class="text-bold text-dark" ></a>
+		</h5>
+	</div>
+	<div class="card-body">
+		<table class="table table-bordered table-hover">
+		<thead class="thead-dark">
+			<tr>
+			<th class="col-9">Title</th>
+			<th scope="col-3">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="tempThesis : ${thesis}" th:if="${tempThesis.professor.id == professor.id}">
+			<td class="col-9 table-link">
+				<a style="color:black" th:text="${tempThesis.title}" th:href="@{/thesis/detail(thesisId=${tempThesis.id})}"></a>
+			</td>
+			<td>
+				<span sec:authorize="hasAuthority('PROFESSOR')" th:if="${tempThesis.professor.id == currentProfessor.id}">
+				<a sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/showFormForUpdate(thesisId=${tempThesis.id})}" class="btn btn-info btn-sm">
+					Update
+				</a>
+				<a sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/thesis/delete(thesisId=${tempThesis.id})}" class="btn btn-danger btn-sm" onclick="if (!(confirm('Are you sure you want to delete this thesis?'))) return false">
+					Delete
+				</a>
+				</span>
+				<a th:if="${appliedThesisIds.contains(tempThesis.id)}" sec:authorize="hasAuthority('STUDENT')" th:href="@{/thesis/cancel(thesisId=${tempThesis.id})}" class="btn btn-warning btn-sm" onclick="if (!(confirm('Are you sure you want to cancel your application to this thesis?'))) return false">
+				Cancel Application
+				</a>
+				<a th:unless="${appliedThesisIds.contains(tempThesis.id) || assignedThesisIds.contains(tempThesis.id) || myAssignedThesisId!=null}" sec:authorize="hasAuthority('STUDENT')" th:href="@{/thesis/apply(thesisId=${tempThesis.id})}" class="btn btn-warning btn-sm" onclick="if (!(confirm('Are you sure you want to apply to this thesis?'))) return false">
+				Apply
+				</a>
+				<p class="text-success" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId == tempThesis.id}">You have been assigned to this thesis!</p>
+				<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${myAssignedThesisId!=null && myAssignedThesisId != tempThesis.id && !assignedThesisIds.contains(tempThesis.id)}">Cannot apply</p>
+				<p class="text-muted" sec:authorize="hasAuthority('STUDENT')" th:if="${assignedThesisIds.contains(tempThesis.id) && myAssignedThesisId != tempThesis.id}">Thesis is closed</p>
+			</td>
+			</tr>
+		</tbody>
+		</table>
 		</div>
 	</div>
 
+
 	
     <span th:utext="${applicationExists}"></span>
-	<a th:href="@{/}" class="btn btn-secondary btn-sm mb-3">Home</a>
+<div class="text-md-right mt-2">
+	<a th:href="@{/}" class="btn btn-secondary btn-md mb-3">Home</a>
+</div>
 </div>
 
 
-<!-- The detail view modal TODO: unsused-->
-<div class="modal fade" id="detail-modal" tabindex="-1" role="dialog" aria-labelledby="modal1Label" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="detail-modal-title">Thesis Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- modal content goes here -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-	
 </body>
 </html>
 

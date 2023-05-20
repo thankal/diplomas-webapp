@@ -6,11 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +16,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.thesisapp.model.Application;
 import com.example.thesisapp.model.Assignment;
 import com.example.thesisapp.model.BestAverageSelectionStrategy;
+import com.example.thesisapp.model.Evaluation;
+import com.example.thesisapp.model.EvaluationFormula;
 import com.example.thesisapp.model.FewestCoursesSelectionStrategy;
 import com.example.thesisapp.model.Professor;
 import com.example.thesisapp.model.RandomSelectionStrategy;
 import com.example.thesisapp.model.SelectionStrategy;
+import com.example.thesisapp.model.StandardEvaluationFormula;
 import com.example.thesisapp.model.Student;
 import com.example.thesisapp.model.Thesis;
 import com.example.thesisapp.model.ThresholdSelectionStrategy;
 import com.example.thesisapp.model.User;
 import com.example.thesisapp.service.ApplicationService;
 import com.example.thesisapp.service.AssignmentService;
+import com.example.thesisapp.service.EvaluationService;
 import com.example.thesisapp.service.ProfessorService;
 import com.example.thesisapp.service.StudentService;
 import com.example.thesisapp.service.ThesisService;
@@ -55,21 +56,24 @@ public class ThesisController {
 
     @Autowired
     private AssignmentService assignmentService;
+
+	@Autowired
+    private EvaluationService evaluationService;
 	
 	@Autowired
 	public ThesisController(ThesisService theThesisService) {
 		thesisService = theThesisService;
 	}
 	
+	private User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return (User) authentication.getPrincipal();
+	}
 
 	@RequestMapping("/list")
 	public String listThesis(Model theModel) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-		
+		User currentUser = getCurrentUser();
+
 		// get all available thesis from db
 		List<Thesis> thesisList = thesisService.findAll();
 
@@ -107,13 +111,9 @@ public class ThesisController {
 	
 	@RequestMapping("/detail")
 	public String detailThesis(Model theModel, @RequestParam("thesisId") long thesisId){
-									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-		
+
+		User currentUser = getCurrentUser();
+	
 		// get the selected thesis from db
 		Thesis theThesis = thesisService.findById(thesisId);
 
@@ -132,6 +132,17 @@ public class ThesisController {
 		if (currentUser.getRole().getValue().equals("Professor")) {
 			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 			theModel.addAttribute("currentProfessor", currentProfessor);
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			theModel.addAttribute("evaluation", evaluation);
+
+		}
+		else if (currentUser.getRole().getValue().equals("Student")){
+			Student student = studentService.findStudentByUser(currentUser);
+			Long myAssignedThesisId = assignmentService.getThesisIdByStudent(student.getId()).orElse(null);
+			theModel.addAttribute("myAssignedThesisId", myAssignedThesisId);
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			theModel.addAttribute("evaluation", evaluation);
+
 		}
 	
 		
@@ -141,18 +152,13 @@ public class ThesisController {
 	@RequestMapping("/assign")
 	public String assignThesis(Model model, @RequestParam("thesisId") long thesisId){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+		User currentUser = getCurrentUser();
 
 		if (currentUser.getRole().getValue().equals("Professor")) {
 			Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 			model.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -185,11 +191,9 @@ public class ThesisController {
 															@RequestParam(value="th1", required=false) Double th1,
 															@RequestParam(value="th2", required=false) Integer th2){
 									
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
+
 
 		Professor currentProfessor;
 		if (currentUser.getRole().getValue().equals("Professor")) {
@@ -197,7 +201,6 @@ public class ThesisController {
 			theModel.addAttribute("currentProfessor", currentProfessor);
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -212,6 +215,10 @@ public class ThesisController {
 			strategy = new FewestCoursesSelectionStrategy();
 		}
 		else if (strategyOption.equals("threshold")) {
+			if (th1 == null || th2 == null) {
+				// throw error
+				return "redirect:/thesis/list";
+			}
 			strategy = new ThresholdSelectionStrategy(th1, th2);
 		}
 		else {
@@ -238,7 +245,6 @@ public class ThesisController {
 		if (currentProfessor == theThesis.getProfessor()) {
 
 			if(assignmentService.assignmentExists(thesisId, selectedStudent.getId())){
-				// System.out.println("Assignment for this thesis already exists!");
 				theModel.addAttribute("assignmentExists", "There is already an assignment for this thesis!");
 				// redirect back to the assignment page
 				return "redirect:/thesis/assign?thesisId=" + thesisId;
@@ -257,7 +263,6 @@ public class ThesisController {
 			applicationService.cancelApplicationsByStudent(selectedStudent.getId());
 		}
 		else {
-			// not allowed TODO: maybe throw a forbidden message?
 			return "redirect:/thesis/list";
 		}
 
@@ -266,25 +271,130 @@ public class ThesisController {
 		return "redirect:/thesis/assign?thesisId=" + thesisId;
 	}
 
-	@RequestMapping("/cancelAssignment")
-	public String cancelAssignmentThesis(Model theModel, @RequestParam("thesisId") long thesisId){
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
-        Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+	@RequestMapping("/evaluate")
+	public String evaluateThesis(Model model, @RequestParam("thesisId") long thesisId){
+									
 
-        Thesis thesis = thesisService.findById(thesisId);
+		User currentUser = getCurrentUser();
 
-		// make sure the proffesor is the one that created the thesis
-		if (currentProfessor == thesis.getProfessor()) {
-			// cancel existing assignment
-			if (assignmentService.assignmentExists(thesisId)) {
-				assignmentService.cancelAssignmentByThesisId(thesisId);
-			}
+		Professor currentProfessor;
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			currentProfessor = professorService.findProfessorByUser(currentUser);
+			model.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			return "redirect:/thesis/list";
 		}
 		
+		// get the selected thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// add to the spring model
+		model.addAttribute("thesis", theThesis);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == theThesis.getProfessor()) {
+
+			// get the assigned student if there is one
+			Student studentAssigned = assignmentService.getStudentAssigned(thesisId).orElseThrow(
+				()-> new RuntimeException("ASSIGNMENT_NOT_FOUND")
+			);
+			model.addAttribute("studentAssigned", studentAssigned);
+
+			Evaluation evaluation = evaluationService.getEvaluationForThesis(thesisId).orElse(null);
+			model.addAttribute("evaluation", evaluation);
+
+		}
+		else {
+			return "redirect:/thesis/list";
+		}
+
+
+		
+		return "thesis/evaluate-thesis";
+	}
+
+	// User selects a strategy and confirms the assignment
+	@PostMapping("/evaluate")
+	public String saveEvaluationThesis(Model theModel, @RequestParam("thesisId") long thesisId,
+															@RequestParam("formula") String formulaOption,
+															@RequestParam(value="implementation") double implementationGrade,
+															@RequestParam(value="report") double reportGrade,
+															@RequestParam(value="presentation") double presentationGrade){
+									
+
+		User currentUser = getCurrentUser();
+
+
+		Professor currentProfessor;
+		if (currentUser.getRole().getValue().equals("Professor")) {
+			currentProfessor = professorService.findProfessorByUser(currentUser);
+			theModel.addAttribute("currentProfessor", currentProfessor);
+		}
+		else {
+			return "redirect:/thesis/list";
+		}
+
+
+
+		// get the current thesis from db
+		Thesis theThesis = thesisService.findById(thesisId);
+
+		// make sure the proffesor is the one that created the thesis
+		if (currentProfessor == theThesis.getProfessor()) {
+			EvaluationFormula formula;
+			if (formulaOption.equals("standard")) {
+				formula = new StandardEvaluationFormula();
+			}
+
+			else {
+				// throw error
+				return "redirect:/thesis/list";
+			}
+			
+			double totalGrade;
+			totalGrade = formula.calculateTotalGrade(implementationGrade, reportGrade, presentationGrade);
+
+			Assignment theAssignment = assignmentService.getAssignmentByThesisId(thesisId).orElseThrow(
+				()-> new RuntimeException("ASSIGNMENT_NOT_FOUND")
+			);
+
+			// ..and then save the evaluation
+			Evaluation theEvaluation = new Evaluation();
+			theEvaluation.setAssignment(theAssignment);
+			theEvaluation.setImplementation(implementationGrade);
+			theEvaluation.setReport(reportGrade);
+			theEvaluation.setPresentation(presentationGrade);
+			theEvaluation.setTotal(totalGrade);
+			evaluationService.save(theEvaluation);
+
+		}
+		else {
+			return "redirect:/thesis/list";
+		}
+
+		
+        // redirect back to the assignment page
+		return "redirect:/thesis/evaluate?thesisId=" + thesisId;
+	}
+
+	@RequestMapping("/cancelAssignment")
+	public String cancelAssignmentThesis(Model theModel, @RequestParam("thesisId") long thesisId){
+
+		User currentUser = getCurrentUser();
+
+		Professor currentProfessor = professorService.findProfessorByUser(currentUser);
+
+			Thesis thesis = thesisService.findById(thesisId);
+
+			// make sure the proffesor is the one that created the thesis
+			if (currentProfessor == thesis.getProfessor()) {
+				// cancel existing assignment
+				if (assignmentService.assignmentExists(thesisId)) {
+					assignmentService.cancelAssignmentByThesisId(thesisId);
+				}
+			}
+			
 		return "redirect:/thesis/assign?thesisId=" + thesisId;
 	}
 	
@@ -318,13 +428,9 @@ public class ThesisController {
 	@RequestMapping("/save")
 	public String saveThesis(@ModelAttribute("thesis") Thesis theThesis){
 
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+		User currentUser = getCurrentUser();
 
-        // TODO: maybe add a check if the user is a professor
+
         Professor currentProfessor = professorService.findProfessorByUser(currentUser);
 
         theThesis.setProfessor(currentProfessor);
@@ -347,11 +453,8 @@ public class ThesisController {
 
 	@RequestMapping("/apply")
 	public String apply(@RequestParam("thesisId") int theId, Model model) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
 
 		
 		// apply to the thesis
@@ -359,7 +462,6 @@ public class ThesisController {
         Student student = studentService.findStudentByUser(currentUser);
 
 		if(applicationService.applicationExists(student.getId(), thesis.getId())){
-			System.out.println("Application already exists!");
             model.addAttribute("applicationExists", "You have already applied to this thesis!");
 			return "redirect:/thesis/list";
         }
@@ -375,11 +477,8 @@ public class ThesisController {
 	
 	@RequestMapping("/cancel")
 	public String cancelApplication(@RequestParam("thesisId") int theId, Model model) {
-		// useful for getting the current user for the rest 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-		String currentUid = userDetails.getUsername();
-		User currentUser = userService.getUserByUsername(currentUid);
+
+		User currentUser = getCurrentUser();
 
 		
 		// cancel application to the thesis

@@ -1,31 +1,68 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Navbar</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
-</head>
 
-<body>
-    <header class="header">
-        <h2 class="logo">ThesisApp</h2>
-        <nav class="navbar" th:fragment="navbar"> 
-            <a href="#" class="btn btn-primary" style="background-color: #fc8a09; color: #000000; border-color: #fc8a09;">Homepage</a>
-            <a href="#" class="btn btn-primary" style="background-color: #fc8a09; color: #000000; border-color: #fc8a09;">About</a>
-            <a href="#" class="btn btn-primary" style="background-color: #fc8a09; color: #000000; border-color: #fc8a09;">Dashboard</a>
-            <button class="btn btn-primary" style="background-color: #000000; color: #fc8a09; border: #000000;">Login</button>
-            <button class="btn btn-success" style="background-color: #fc8a09; color: #000000; border: #000000;">Register</button>
-        </nav>
-    </header>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Navbar</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+    </head>
+
+    <body>  
+        <header class="mb-3">
+            <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+                <h1>
+                <a class="navbar-brand m-md-2" th:href="@{/}">ThesisApp</a>
+                </h1>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item"> 
+                        <a class="nav-link" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item"> 
+                        <a class="nav-link" th:href="@{/about}">About us<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item"> 
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/thesis/list}">Thesis List<span class="sr-only">(current)</span></a>
+                        </li>
+
+
+                        
+                    </ul>
+                    
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group mr-2" role="group" aria-label="First group">
+                            <a type="button" class="btn btn-success" sec:authorize="hasRole('ROLE_ANONYMOUS')" th:href="@{/login}">Login</a>
+                        </div>
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
+                            <a type="button" class="btn btn-primary" sec:authorize="hasRole('ROLE_ANONYMOUS')" th:href="@{/register}">Register</a>
+                        </div>
+                        <div class="btn-group mr-3" role="group" aria-label="Fourth group">
+                            <a type="button" class="btn btn-dark" sec:authorize="hasAuthority('STUDENT')" th:href="@{/student/profile}"  ><span sec:authentication="name"></span></a>
+                        </div>
+                        <div class="btn-group mr-3" role="group" aria-label="Fourth group">
+                            <a type="button" class="btn btn-dark" sec:authorize="hasAuthority('PROFESSOR')" th:href="@{/professor/profile}"  ><span sec:authentication="name"></span></a>
+                        </div>
+                        <div class="btn-group mr-2" role="group" aria-label="Third group">
+                            <a type="button" class="btn btn-danger" sec:authorize="isAuthenticated()" th:href="@{/logout}"> Logout</a>
+                        </div>
+
+                    </div>
+                
+                </div>
+            </nav>
+        </header>
+
+    </body>  
+
 </html>
 
 
